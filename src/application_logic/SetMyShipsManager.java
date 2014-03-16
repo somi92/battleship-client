@@ -1,5 +1,6 @@
 package application_logic;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,10 +35,11 @@ public int jExit;
 				
 				final JButton btn = myButtonGameBoard[i][j];
 				
-				borderPaintActionListener(btn);
-				enterActionListener(btn);
-				exitActionListener(btn);
-				setToolTipEffect(btn);
+//				borderPaintActionListener(btn);
+				enterActionListener(btn,lightTheSuggestedButtons(suggestedIndexes(iEnter, jEnter, "H", 2)));
+//				enterActionListener(btn);
+//				exitActionListener(btn);
+//				setToolTipEffect(btn);
 			}
 		}
 		
@@ -56,20 +58,28 @@ public int jExit;
 	}
 	
 	
-	public void enterActionListener(final JButton btn){
+	public void enterActionListener(final JButton btn, String[] btnNames){
 		btn.addMouseListener(new MouseAdapter() {
 			public void mouseEntered(MouseEvent arg0) {
 				
-				String name = btn.getName();
-				char i = name.charAt(0);
-				char j = name.charAt(1);
 				
-				iEnter = Integer.parseInt(i+"");
-				jEnter = Integer.parseInt(j+"");
-//				System.out.println("Enter: " + +iEnter+ " " +jEnter);
+				String name = btn.getName();
+				char iChar = name.charAt(0);
+				char jChar = name.charAt(1);
+				
+				iEnter = Integer.parseInt(iChar+"");
+				jEnter = Integer.parseInt(jChar+"");
+				System.out.println("Enter: " + +iEnter+ " " +jEnter);
 //				btn.setBorderPainted(true);
 				
+//				for(int i=0 ;i<btnNames.length;i++)
+//					if(btn.getName().equals(btnNames[i]))
+//						btn.setBorderPainted(true);
 				
+				String[] btnNames= null;
+				myButtonGameBoard[iEnter][jEnter].setBorderPainted(true);
+
+
 			}
 		});
 	}
@@ -107,26 +117,27 @@ public int jExit;
  * @param size
  * @return [size, myI,myJ, ... ]
  */
-	public int[] calculateButtonsForRecommand(int i, int j, String horOrVer,int size){
+	public int[] suggestedIndexes(int i, int j, String horOrVer,int size){
 		
 		int[] suggestIndexes=null;
+		
 		switch(size){
 		case 1: {
 			suggestIndexes=new int[3];
-			break;
 		}
+		break;
 		case 2:{
 			suggestIndexes=new int[5];
-			break;
 		}
+		break;
 		case 3:{
 			suggestIndexes=new int[7];
-			break;
 		}
+		break;
 		case 5:{
 			suggestIndexes=new int[11];
-			break;
 		}
+		break;
 		default: return suggestIndexes;
 				}
 		
@@ -298,11 +309,17 @@ public int jExit;
 
 	public String[] lightTheSuggestedButtons(int[] suggestedIndexes){
 		
-		String[] btnNames = null;
+		String[] btnNames = new String[(suggestedIndexes.length-1)/2];
+		int brojac = 0;
 		
-		for (int i=1;i<suggestedIndexes.length;i++) {
-			btnNames[i] = getButtonFromSuggestedButtons(i, suggestedIndexes)+"";
+		for (int i=1;i<suggestedIndexes.length;i+=2) {
+			btnNames[brojac] = i+""+(i+1);
+			brojac++;
+//			System.out.println(btnNames[brojac]);
 		}
+		
+		
+		
 		return btnNames;
 	}
 
