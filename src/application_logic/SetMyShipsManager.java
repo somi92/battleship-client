@@ -68,7 +68,8 @@ public int jExit;
 				iEnter = Integer.parseInt(i+"");
 				jEnter = Integer.parseInt(j+"");
 //				System.out.println("Enter: " + +iEnter+ " " +jEnter);
-				btn.setBorderPainted(true);
+//				btn.setBorderPainted(true);
+				
 				
 			}
 		});
@@ -296,13 +297,15 @@ public int jExit;
 	}//kraj metode
 
 
-//	public void lightTheSuggestedButtons(int[] suggestedIndexes){
-//		
-//		JButton btn;
-//		btn = getButtonFromSuggestedButtons(1, suggestedIndexes);
-//		
-//		
-//	}
+	public String[] lightTheSuggestedButtons(int[] suggestedIndexes){
+		
+		String[] btnNames = null;
+		
+		for (int i=1;i<suggestedIndexes.length;i++) {
+			btnNames[i] = getButtonFromSuggestedButtons(i, suggestedIndexes)+"";
+		}
+		return btnNames;
+	}
 
 
 
