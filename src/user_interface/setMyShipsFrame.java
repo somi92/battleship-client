@@ -14,13 +14,17 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
 
-import application_logic.MyShipsManager;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 import javax.swing.SwingConstants;
 import java.awt.Insets;
+import javax.swing.JCheckBox;
+
+import application_logic.SetMyShipsManager;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class setMyShipsFrame extends JFrame {
 
@@ -31,10 +35,9 @@ public class setMyShipsFrame extends JFrame {
 	private JRadioButton rdbtnTwoCellShips;
 	private JRadioButton rdbtnThreeCellsShips;
 	private JRadioButton rdbtnForuCellShips;
-	private JButton btnHorisontal;
-	private JButton btnVertical;
 	private JPanel leftPanel;
-	public ButtonGroup group;
+	public ButtonGroup groupShips;
+	public ButtonGroup groupHV;
 
 	/**
 	 * Launch the application.
@@ -66,15 +69,27 @@ public class setMyShipsFrame extends JFrame {
 		contentPane.add(getUpPanel(), BorderLayout.NORTH);
 		contentPane.add(getLeftPanel(), BorderLayout.WEST);
 		
-		group = new ButtonGroup();
-		group.add(getRdbtnOneCellShips());
-		group.add(rdbtnTwoCellShips);
-		group.add(rdbtnThreeCellsShips);
-		group.add(rdbtnForuCellShips);
+		groupShips = new ButtonGroup();
+		groupShips.add(getRdbtnOneCellShips());
+		groupShips.add(rdbtnTwoCellShips);
+		groupShips.add(rdbtnThreeCellsShips);
+		groupShips.add(rdbtnForuCellShips);
+		
+		groupHV = new ButtonGroup();
+		groupHV.add(rdbtnHorisontal);
+		groupHV.add(rdbtnVertical);
 	}
 
-	MyShipsManager shipManager = new MyShipsManager();
+	SetMyShipsManager shipManager = new SetMyShipsManager();
 	JButton[][] buttonGameBoard = shipManager.generateGameBoard();
+	
+	private JRadioButton rdbtnHorisontal;
+	private JRadioButton rdbtnVertical;
+	private JLabel lblLinija;
+	private JLabel lblOneCellsShip;
+	private JLabel lblTwoCellsShip;
+	private JLabel lblThreeCellsShip;
+	private JLabel lblFrourCellsShip;
 	
 	private JPanel getCenterPanel() {
 		if (centerPanel == null) {
@@ -111,7 +126,7 @@ public class setMyShipsFrame extends JFrame {
 	}
 	private JRadioButton getRdbtnThreeCellsShips() {
 		if (rdbtnThreeCellsShips == null) {
-			rdbtnThreeCellsShips = new JRadioButton("Three cells ships");
+			rdbtnThreeCellsShips = new JRadioButton("Three cells ships:");
 		}
 		return rdbtnThreeCellsShips;
 	}
@@ -121,35 +136,67 @@ public class setMyShipsFrame extends JFrame {
 		}
 		return rdbtnForuCellShips;
 	}
-	private JButton getBtnHorisontal() {
-		if (btnHorisontal == null) {
-			btnHorisontal = new JButton("Horisontal");
-		}
-		return btnHorisontal;
-	}
-	private JButton getBtnVertical() {
-		if (btnVertical == null) {
-			btnVertical = new JButton("Vertical");
-			btnVertical.setMinimumSize(new Dimension(81, 23));
-			btnVertical.setMaximumSize(new Dimension(81, 23));
-			btnVertical.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-				}
-			});
-		}
-		return btnVertical;
-	}
 	private JPanel getLeftPanel() {
 		if (leftPanel == null) {
 			leftPanel = new JPanel();
-			leftPanel.setLayout(new MigLayout("", "[]", "[][][][][][][][]"));
+			leftPanel.setLayout(new MigLayout("", "[][]", "[][][][][][][][][][]"));
 			leftPanel.add(getRdbtnOneCellShips(), "cell 0 1");
+			leftPanel.add(getLblOneCellsShip(), "cell 1 1");
 			leftPanel.add(getRdbtnTwoCellShips(), "cell 0 2");
+			leftPanel.add(getLblTwoCellsShip(), "cell 1 2");
 			leftPanel.add(getRdbtnThreeCellsShips(), "cell 0 3");
+			leftPanel.add(getLblThreeCellsShip(), "cell 1 3");
 			leftPanel.add(getRdbtnForuCellShips(), "cell 0 4");
-			leftPanel.add(getBtnHorisontal(), "cell 0 6,alignx left");
-			leftPanel.add(getBtnVertical(), "cell 0 7,alignx left");
+			leftPanel.add(getLblFrourCellsShip(), "cell 1 4");
+			leftPanel.add(getLblLinija(), "cell 0 5,growx,aligny center");
+			leftPanel.add(getRdbtnHorisontal(), "cell 0 7");
+			leftPanel.add(getRdbtnVertical(), "cell 0 8");
 		}
 		return leftPanel;
+	}
+	private JRadioButton getRdbtnHorisontal() {
+		if (rdbtnHorisontal == null) {
+			rdbtnHorisontal = new JRadioButton("Horisontal");
+			rdbtnHorisontal.setSelected(true);
+		}
+		return rdbtnHorisontal;
+	}
+	private JRadioButton getRdbtnVertical() {
+		if (rdbtnVertical == null) {
+			rdbtnVertical = new JRadioButton("Vertical");
+		}
+		return rdbtnVertical;
+	}
+	private JLabel getLblLinija() {
+		if (lblLinija == null) {
+			lblLinija = new JLabel("-----------------");
+			lblLinija.setHorizontalTextPosition(SwingConstants.CENTER);
+			lblLinija.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return lblLinija;
+	}
+	private JLabel getLblOneCellsShip() {
+		if (lblOneCellsShip == null) {
+			lblOneCellsShip = new JLabel("5");
+		}
+		return lblOneCellsShip;
+	}
+	private JLabel getLblTwoCellsShip() {
+		if (lblTwoCellsShip == null) {
+			lblTwoCellsShip = new JLabel("3");
+		}
+		return lblTwoCellsShip;
+	}
+	private JLabel getLblThreeCellsShip() {
+		if (lblThreeCellsShip == null) {
+			lblThreeCellsShip = new JLabel("2");
+		}
+		return lblThreeCellsShip;
+	}
+	private JLabel getLblFrourCellsShip() {
+		if (lblFrourCellsShip == null) {
+			lblFrourCellsShip = new JLabel("1");
+		}
+		return lblFrourCellsShip;
 	}
 }

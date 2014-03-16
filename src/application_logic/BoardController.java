@@ -6,7 +6,7 @@ public class BoardController {
 
 	public BoardController(){
 		
-		MyGameBoard myBoard = new MyGameBoard();
+		MyGameBoardMask myBoard = new MyGameBoardMask();
 		OpponentsGameBoard firstOpponentBoard = new OpponentsGameBoard();
 		OpponentsGameBoard secondOpponentBoard = new OpponentsGameBoard();
 	}
