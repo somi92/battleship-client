@@ -20,7 +20,31 @@ public int iEnter;
 public int jEnter;
 public int iExit;
 public int jExit;
+
+	public String[] btnNames;
 	
+	public String[] getBtnNames() {
+		return this.btnNames;
+	}
+
+	private int size;
+	private int orientation;
+	
+	public int getSize() {
+		return this.size;
+	}
+	
+	public void setSize(int size) {
+		this.size = size;
+	}
+	
+	public int getOrientation() {
+		return this.orientation;
+	}
+	
+	public void setOrientation(int orientation) {
+		this.orientation = orientation;
+	}
 	
 	public JButton[][] generateGameBoard(){
 		
@@ -38,7 +62,7 @@ public int jExit;
 //				borderPaintActionListener(btn);
 				enterActionListener(btn,lightTheSuggestedButtons(suggestedIndexes(iEnter, jEnter, "H", 2)));
 //				enterActionListener(btn);
-//				exitActionListener(btn);
+				exitActionListener(btn);
 //				setToolTipEffect(btn);
 			}
 		}
@@ -71,12 +95,21 @@ public int jExit;
 				jEnter = Integer.parseInt(jChar+"");
 				System.out.println("Enter: " + +iEnter+ " " +jEnter);
 //				btn.setBorderPainted(true);
-				
+
 //				for(int i=0 ;i<btnNames.length;i++)
 //					if(btn.getName().equals(btnNames[i]))
 //						btn.setBorderPainted(true);
+				String[] btn = getBtnNames();
+				int[] i = new int[btn.length];
+				int[] j = new int[btn.length];
 				
-				String[] btnNames= null;
+				for(int k=0; k<btn.length; k++) {
+					String n = btn[k];
+					i[k] = Integer.parseInt(n.charAt(0)+"");
+					j[k] = Integer.parseInt(n.charAt(1)+"");
+					myButtonGameBoard[i[k]][j[k]].setBorderPainted(true);
+				}
+				
 				myButtonGameBoard[iEnter][jEnter].setBorderPainted(true);
 
 
@@ -97,7 +130,7 @@ public int jExit;
 				iExit = Integer.parseInt(i+"");
 				jExit = Integer.parseInt(j+"");
 //				System.out.println("Exit: "+iExit+ " " +jExit);
-//				btn.setBorderPainted(false);
+				btn.setBorderPainted(false);
 				
 			}
 		});
@@ -313,13 +346,13 @@ public int jExit;
 		int brojac = 0;
 		
 		for (int i=1;i<suggestedIndexes.length;i+=2) {
-			btnNames[brojac] = i+""+(i+1);
+			btnNames[brojac] = suggestedIndexes[i]+""+(suggestedIndexes[i+1]);
 			brojac++;
 //			System.out.println(btnNames[brojac]);
 		}
 		
 		
-		
+		this.btnNames = btnNames;
 		return btnNames;
 	}
 
