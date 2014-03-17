@@ -16,35 +16,16 @@ public class SetMyShipsManager {
 	public ImageIcon papirImg = new ImageIcon(getClass().getResource("/resources/sea.png"));
 	
 	//mouse enter / exit coordinates
-public int iEnter;
-public int jEnter;
+	public static int[] suggestedIndexes;
+public static int iEnter;
+public static int jEnter;
 public int iExit;
 public int jExit;
 
-	public String[] btnNames;
-	
-	public String[] getBtnNames() {
-		return this.btnNames;
-	}
+public int x;
+public int y;
 
-	private int size;
-	private int orientation;
-	
-	public int getSize() {
-		return this.size;
-	}
-	
-	public void setSize(int size) {
-		this.size = size;
-	}
-	
-	public int getOrientation() {
-		return this.orientation;
-	}
-	
-	public void setOrientation(int orientation) {
-		this.orientation = orientation;
-	}
+
 	
 	public JButton[][] generateGameBoard(){
 		
@@ -60,7 +41,7 @@ public int jExit;
 				final JButton btn = myButtonGameBoard[i][j];
 				
 //				borderPaintActionListener(btn);
-				enterActionListener(btn,lightTheSuggestedButtons(suggestedIndexes(iEnter, jEnter, "H", 2)));
+				enterActionListener(btn);
 //				enterActionListener(btn);
 				exitActionListener(btn);
 //				setToolTipEffect(btn);
@@ -82,7 +63,7 @@ public int jExit;
 	}
 	
 	
-	public void enterActionListener(final JButton btn, String[] btnNames){
+	public void enterActionListener(final JButton btn){
 		btn.addMouseListener(new MouseAdapter() {
 			public void mouseEntered(MouseEvent arg0) {
 				
@@ -93,26 +74,34 @@ public int jExit;
 				
 				iEnter = Integer.parseInt(iChar+"");
 				jEnter = Integer.parseInt(jChar+"");
-				System.out.println("Enter: " + +iEnter+ " " +jEnter);
+				System.out.println("1/  Enter: " + +iEnter+ " " +jEnter);
 //				btn.setBorderPainted(true);
 
 //				for(int i=0 ;i<btnNames.length;i++)
 //					if(btn.getName().equals(btnNames[i]))
 //						btn.setBorderPainted(true);
-				String[] btn = getBtnNames();
-				int[] i = new int[btn.length];
-				int[] j = new int[btn.length];
 				
-				for(int k=0; k<btn.length; k++) {
-					String n = btn[k];
-					i[k] = Integer.parseInt(n.charAt(0)+"");
-					j[k] = Integer.parseInt(n.charAt(1)+"");
-					myButtonGameBoard[i[k]][j[k]].setBorderPainted(true);
+				
+				String[] btnNames =	btnNames = lightTheSuggestedButtons(suggestedIndexes(iEnter, jEnter, "H", 2));
+				
+				
+				for (String btnName : btnNames) {
+//					System.out.println("iEnter : jEnter = " + iEnter +" : "+ jEnter);
+					System.out.println("5/  btn name: " + btnName);
 				}
 				
-				myButtonGameBoard[iEnter][jEnter].setBorderPainted(true);
-
-
+				for(int i=0; i<btnNames.length-1;i++){
+					if(btn.getName().equals(btnNames[i]))
+						System.out.println("6/ oznaci mi: "+btnNames[i+1]);
+					
+						char iChar1 = btnNames[i+1].charAt(0);
+						char jChar1 = btnNames[i+1].charAt(1);
+						x = Integer.parseInt(iChar1+"");
+						y = Integer.parseInt(jChar1+"");
+						
+						myButtonGameBoard[iEnter][jEnter].setBorderPainted(true);
+						myButtonGameBoard[x][y].setBorderPainted(true);			
+				}
 			}
 		});
 	}
@@ -131,6 +120,9 @@ public int jExit;
 				jExit = Integer.parseInt(j+"");
 //				System.out.println("Exit: "+iExit+ " " +jExit);
 				btn.setBorderPainted(false);
+				
+				myButtonGameBoard[iEnter][jEnter].setBorderPainted(false);
+				myButtonGameBoard[x][y].setBorderPainted(false);
 				
 			}
 		});
@@ -192,6 +184,7 @@ public int jExit;
 				suggestIndexes[2]=jEnter;
 				suggestIndexes[3]=iEnter;
 				suggestIndexes[4]=jEnter-1;
+				System.out.println("2/  Suggest:" +suggestIndexes[3] +" "+suggestIndexes[4]);
 				return suggestIndexes;
 			}
 			// [ 0  0  1  1  1  0  0 ]
@@ -277,82 +270,95 @@ public int jExit;
 	 * @param suggestIndexes
 	 * @return
 	 */
-	public int[] getButtonFromSuggestedButtons(int position, int[] suggestedIndexes){
-	
-		int[] indexOfButton = new int[2];
-	
-		switch(suggestedIndexes[0]){
-			case 1: {
-				indexOfButton[0] = suggestedIndexes[1];
-				indexOfButton[1] = suggestedIndexes[2];
-				break;
-			}
-			case 2:{
-				if(position==1){
-					indexOfButton[0] = suggestedIndexes[1];
-					indexOfButton[1] = suggestedIndexes[2];
-				}
-				if(position==2){
-					indexOfButton[0] = suggestedIndexes[3];
-					indexOfButton[1] = suggestedIndexes[4];
-				}
-				break;
-			}
-			case 3:
-				if(position==1){
-					indexOfButton[0] = suggestedIndexes[1];
-					indexOfButton[1] = suggestedIndexes[2];
-				}
-				if(position==2){
-					indexOfButton[0] = suggestedIndexes[3];
-					indexOfButton[1] = suggestedIndexes[4];
-				}
-				if(position==3){
-					indexOfButton[0] = suggestedIndexes[5];
-					indexOfButton[1] = suggestedIndexes[6];
-				}
-				break;	
-			case 5: {
-				if(position==1){
-					indexOfButton[0] = suggestedIndexes[1];
-					indexOfButton[1] = suggestedIndexes[2];
-				}
-				if(position==2){
-					indexOfButton[0] = suggestedIndexes[3];
-					indexOfButton[1] = suggestedIndexes[4];
-				}
-				if(position==3){
-					indexOfButton[0] = suggestedIndexes[5];
-					indexOfButton[1] = suggestedIndexes[6];
-				}
-				if(position==4){
-					indexOfButton[0] = suggestedIndexes[7];
-					indexOfButton[1] = suggestedIndexes[8];
-				}
-				if(position==5){
-					indexOfButton[0] = suggestedIndexes[9];
-					indexOfButton[1] = suggestedIndexes[10];
-				}
-				break;
-			}
-		}//kraj switch-a
-		return indexOfButton;
-	}//kraj metode
+//	public int[] getButtonFromSuggestedButtons(int position, int[] suggestedIndexes){
+//	
+//		int[] indexOfButton = new int[2];
+//	
+//		switch(suggestedIndexes[0]){
+//			case 1: {
+//				indexOfButton[0] = suggestedIndexes[1];
+//				indexOfButton[1] = suggestedIndexes[2];
+//				break;
+//			}
+//			case 2:{
+//				if(position==1){
+//					indexOfButton[0] = suggestedIndexes[1];
+//					indexOfButton[1] = suggestedIndexes[2];
+//				}
+//				if(position==2){
+//					indexOfButton[0] = suggestedIndexes[3];
+//					indexOfButton[1] = suggestedIndexes[4];
+//				}
+//				break;
+//			}
+//			case 3:
+//				if(position==1){
+//					indexOfButton[0] = suggestedIndexes[1];
+//					indexOfButton[1] = suggestedIndexes[2];
+//				}
+//				if(position==2){
+//					indexOfButton[0] = suggestedIndexes[3];
+//					indexOfButton[1] = suggestedIndexes[4];
+//				}
+//				if(position==3){
+//					indexOfButton[0] = suggestedIndexes[5];
+//					indexOfButton[1] = suggestedIndexes[6];
+//				}
+//				break;	
+//			case 5: {
+//				if(position==1){
+//					indexOfButton[0] = suggestedIndexes[1];
+//					indexOfButton[1] = suggestedIndexes[2];
+//				}
+//				if(position==2){
+//					indexOfButton[0] = suggestedIndexes[3];
+//					indexOfButton[1] = suggestedIndexes[4];
+//				}
+//				if(position==3){
+//					indexOfButton[0] = suggestedIndexes[5];
+//					indexOfButton[1] = suggestedIndexes[6];
+//				}
+//				if(position==4){
+//					indexOfButton[0] = suggestedIndexes[7];
+//					indexOfButton[1] = suggestedIndexes[8];
+//				}
+//				if(position==5){
+//					indexOfButton[0] = suggestedIndexes[9];
+//					indexOfButton[1] = suggestedIndexes[10];
+//				}
+//				break;
+//			}
+//		}//kraj switch-a
+//		return indexOfButton;
+//	}//kraj metode
 
 
 	public String[] lightTheSuggestedButtons(int[] suggestedIndexes){
+		
+		try {
+			System.out.println("3/");
+			for (int i=0;i<suggestedIndexes.length;i++) {
+				System.out.println("["+i+"]" + " = "+suggestedIndexes[i]);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			//e.printStackTrace();
+		}
 		
 		String[] btnNames = new String[(suggestedIndexes.length-1)/2];
 		int brojac = 0;
 		
 		for (int i=1;i<suggestedIndexes.length;i+=2) {
-			btnNames[brojac] = suggestedIndexes[i]+""+(suggestedIndexes[i+1]);
+
+			btnNames[brojac] = suggestedIndexes[i]+""+suggestedIndexes[i+1];
+
 			brojac++;
-//			System.out.println(btnNames[brojac]);
+			try {
+				System.out.println("4/  From suggested array: "+btnNames[brojac]);
+			} catch (Exception e) {
+			}
 		}
 		
-		
-		this.btnNames = btnNames;
 		return btnNames;
 	}
 
