@@ -20,6 +20,7 @@ import java.awt.Font;
 
 public class MyTimer extends JPanel {
 
+
 	private static final long serialVersionUID = -6457684504590405968L;
 	private JLabel lblTime;
 	
@@ -155,5 +156,4 @@ public class MyTimer extends JPanel {
 		}
 		getTimer().cancel();
 	}
-	
 }
