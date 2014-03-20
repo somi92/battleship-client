@@ -15,7 +15,7 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Font;
 
 public class TestTimer implements TimerTimeout {
-
+	
 	private JFrame frame;
 	private JButton btnNewButton;
 	private MyTimer t;
@@ -30,7 +30,6 @@ public class TestTimer implements TimerTimeout {
 		}
 		return t;
 	}
-
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
