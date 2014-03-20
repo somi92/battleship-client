@@ -1,6 +1,6 @@
 package interfaces;
 
-public interface TimerEvent {
+public interface TimerTimeout {
 
 	public void timerTimeout();
 }

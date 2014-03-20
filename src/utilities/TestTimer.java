@@ -1,52 +1,116 @@
 package utilities;
 
-import java.applet.Applet;
-import java.applet.AudioClip;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import interfaces.TimerTimeout;
 
-public class TestTimer {
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.Font;
+
+public class TestTimer implements TimerTimeout {
+
+	private JFrame frame;
+	private JButton btnNewButton;
+	private MyTimer t;
+	private JComboBox comboBox;
+	private JLabel lblNewLabel;
+	private JButton btnNewButton_1;
+	
+	private MyTimer getTimer() {
+		if(t == null) {
+			t = new MyTimer();
+			t.setFont(new Font("Dialog", Font.BOLD, 16));
+		}
+		return t;
+	}
 
 	/**
-	 * @param args
-	 * @throws MalformedURLException 
+	 * Launch the application.
 	 */
-	public static void main(String[] args) throws MalformedURLException {
-		// TODO Auto-generated method stub
-
-		final Timer t = new Timer();
-		
-		final AudioClip clip1 = Applet.newAudioClip(new URL("file:./src/resources/pulse.wav"));
-		final AudioClip clip2 = Applet.newAudioClip(new URL("file:./src/resources/horn.wav"));
-		
-		t.schedule(new TimerTask() {
-			
-			private int counter = 30;
-			
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				if (this.counter==-1) {
-					t.cancel();
-					return;
+				try {
+					TestTimer window = new TestTimer();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				System.out.print(" "+this.counter);
-				if(this.counter<11 && this.counter != 0) {
-					try {
-						clip1.play();
-					} catch (Exception e) {
-						// TODO: handle exception
-					}
-				}
-				if(this.counter==0) {
-					clip2.play();
-				}
-				this.counter--;
 			}
-			
-		}, new Date(), 1000);
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public TestTimer() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		t = new MyTimer(this, 30, true, true);
+//		t = new MyTimer(this, 30, false, false);
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().add(getBtnNewButton(), BorderLayout.CENTER);
+		frame.getContentPane().add(getTimer(), BorderLayout.SOUTH);
+		frame.getContentPane().add(getComboBox(), BorderLayout.EAST);
+		frame.getContentPane().add(getLblNewLabel(), BorderLayout.NORTH);
+		frame.getContentPane().add(getBtnNewButton_1(), BorderLayout.WEST);
 		
 	}
 
+	private JButton getBtnNewButton() {
+		if (btnNewButton == null) {
+			btnNewButton = new JButton("Pokreni");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					getTimer().startTimer();
+				}
+			});
+		}
+		return btnNewButton;
+	}
+
+	@Override
+	public void timerTimeout() {
+		// TODO Auto-generated method stub
+		getLblNewLabel().setText("TIMEOUT!");
+	}
+	
+	private JComboBox getComboBox() {
+		if (comboBox == null) {
+			comboBox = new JComboBox();
+			comboBox.setModel(new DefaultComboBoxModel(new String[] {"jedan", "dva", "tri"}));
+		}
+		return comboBox;
+	}
+	private JLabel getLblNewLabel() {
+		if (lblNewLabel == null) {
+			lblNewLabel = new JLabel("New label");
+		}
+		return lblNewLabel;
+	}
+	private JButton getBtnNewButton_1() {
+		if (btnNewButton_1 == null) {
+			btnNewButton_1 = new JButton("Zaustavi");
+			btnNewButton_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					getTimer().stopTimer();
+				}
+			});
+		}
+		return btnNewButton_1;
+	}
 }
