@@ -26,6 +26,8 @@ import application_logic.SetMyShipsManager;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class SetMyShipsFrame extends JFrame {
 
@@ -35,11 +37,12 @@ public class SetMyShipsFrame extends JFrame {
 	private JRadioButton rdbtnOneCellShips;
 	private JRadioButton rdbtnTwoCellShips;
 	private JRadioButton rdbtnThreeCellsShips;
-	private JRadioButton rdbtnForuCellShips;
+	private JRadioButton rdbtnFiveCellShips;
 	private JPanel leftPanel;
 	public ButtonGroup groupShips;
 	public ButtonGroup groupHV;
-	
+	public int shipSize=1;
+	public char orijentation='H';
 	
 
 	/**
@@ -76,14 +79,17 @@ public class SetMyShipsFrame extends JFrame {
 		groupShips.add(getRdbtnOneCellShips());
 		groupShips.add(rdbtnTwoCellShips);
 		groupShips.add(rdbtnThreeCellsShips);
-		groupShips.add(rdbtnForuCellShips);
+		groupShips.add(rdbtnFiveCellShips);
 		
 		groupHV = new ButtonGroup();
 		groupHV.add(rdbtnHorisontal);
 		groupHV.add(rdbtnVertical);
 	}
 
-	SetMyShipsManager shipManager = new SetMyShipsManager();
+	public SetMyShipsFrame me= this;
+	
+	SetMyShipsManager shipManager = new SetMyShipsManager(me);
+	
 	JButton[][] buttonGameBoard = shipManager.generateGameBoard();
 	
 	private JRadioButton rdbtnHorisontal;
@@ -119,7 +125,9 @@ public class SetMyShipsFrame extends JFrame {
 			rdbtnOneCellShips = new JRadioButton("One cell ships:");
 			rdbtnOneCellShips.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					
+				
+				refreshShipSize();
+
 				}
 			});
 			rdbtnOneCellShips.setSelected(true);
@@ -129,20 +137,41 @@ public class SetMyShipsFrame extends JFrame {
 	private JRadioButton getRdbtnTwoCellShips() {
 		if (rdbtnTwoCellShips == null) {
 			rdbtnTwoCellShips = new JRadioButton("Two cell ships:");
+			rdbtnTwoCellShips.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+				
+				refreshShipSize();
+				
+				}
+			});
 		}
 		return rdbtnTwoCellShips;
 	}
 	private JRadioButton getRdbtnThreeCellsShips() {
 		if (rdbtnThreeCellsShips == null) {
 			rdbtnThreeCellsShips = new JRadioButton("Three cells ships:");
+			rdbtnThreeCellsShips.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					refreshShipSize();
+					
+				}
+			});
 		}
 		return rdbtnThreeCellsShips;
 	}
-	private JRadioButton getRdbtnForuCellShips() {
-		if (rdbtnForuCellShips == null) {
-			rdbtnForuCellShips = new JRadioButton("Foru cell ships:");
+	private JRadioButton getRdbtnFiveCellShips() {
+		if (rdbtnFiveCellShips == null) {
+			rdbtnFiveCellShips = new JRadioButton("Five cell ships:");
+			rdbtnFiveCellShips.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+				
+				refreshShipSize();
+				
+				}
+			});
 		}
-		return rdbtnForuCellShips;
+		return rdbtnFiveCellShips;
 	}
 	private JPanel getLeftPanel() {
 		if (leftPanel == null) {
@@ -154,7 +183,7 @@ public class SetMyShipsFrame extends JFrame {
 			leftPanel.add(getLblTwoCellsShip(), "cell 1 2");
 			leftPanel.add(getRdbtnThreeCellsShips(), "cell 0 3");
 			leftPanel.add(getLblThreeCellsShip(), "cell 1 3");
-			leftPanel.add(getRdbtnForuCellShips(), "cell 0 4");
+			leftPanel.add(getRdbtnFiveCellShips(), "cell 0 4");
 			leftPanel.add(getLblFrourCellsShip(), "cell 1 4");
 			leftPanel.add(getLblLinija(), "cell 0 5,growx,aligny center");
 			leftPanel.add(getRdbtnHorisontal(), "cell 0 7");
@@ -165,6 +194,13 @@ public class SetMyShipsFrame extends JFrame {
 	private JRadioButton getRdbtnHorisontal() {
 		if (rdbtnHorisontal == null) {
 			rdbtnHorisontal = new JRadioButton("Horisontal");
+			rdbtnHorisontal.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+				
+				refreshOrjientation();
+				
+				}
+			});
 			rdbtnHorisontal.setSelected(true);
 		}
 		return rdbtnHorisontal;
@@ -172,6 +208,13 @@ public class SetMyShipsFrame extends JFrame {
 	private JRadioButton getRdbtnVertical() {
 		if (rdbtnVertical == null) {
 			rdbtnVertical = new JRadioButton("Vertical");
+			rdbtnVertical.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				
+				refreshOrjientation();
+				
+				}
+			});
 		}
 		return rdbtnVertical;
 	}
@@ -207,4 +250,20 @@ public class SetMyShipsFrame extends JFrame {
 		}
 		return lblFrourCellsShip;
 	}
+	
+	public void refreshShipSize(){
+		
+		if(rdbtnOneCellShips.isSelected()) shipSize=1;
+		if(rdbtnTwoCellShips.isSelected()) shipSize=2;
+		if(rdbtnThreeCellsShips.isSelected()) shipSize=3;
+		if(rdbtnFiveCellShips.isSelected()) shipSize=5;
+	}
+	
+	public void refreshOrjientation(){
+		
+		if(rdbtnHorisontal.isSelected()) orijentation='H';
+		if(rdbtnVertical.isSelected()) orijentation='V';
+		
+	}
+	
 }

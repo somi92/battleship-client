@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import user_interface.SetMyShipsFrame;
+
 public class SetMyShipsManager {
 
 	public JButton[][] myButtonGameBoard = new JButton[10][10];
@@ -25,8 +27,14 @@ public int jExit;
 public int x;
 public int y;
 
+public SetMyShipsFrame frame;
+
 
 	
+	public SetMyShipsManager(SetMyShipsFrame setMyShipsFrame) {
+	this.frame = setMyShipsFrame;
+}
+
 	public JButton[][] generateGameBoard(){
 		
 		for(int i=0;i<10;i++){
@@ -74,7 +82,7 @@ public int y;
 				
 				iEnter = Integer.parseInt(iChar+"");
 				jEnter = Integer.parseInt(jChar+"");
-				System.out.println("1/  Enter: " + +iEnter+ " " +jEnter);
+				System.out.println("Enter: " + +iEnter+ " " +jEnter);
 //				btn.setBorderPainted(true);
 
 //				for(int i=0 ;i<btnNames.length;i++)
@@ -82,25 +90,45 @@ public int y;
 //						btn.setBorderPainted(true);
 				
 				
-				String[] btnNames =	btnNames = lightTheSuggestedButtons(suggestedIndexes(iEnter, jEnter, "H", 2));
+				String[] btnNames = lightTheSuggestedButtons(suggestedIndexes(iEnter, jEnter, frame.orijentation, frame.shipSize));
 				
 				
-				for (String btnName : btnNames) {
+//				for (String btnName : btnNames) {
 //					System.out.println("iEnter : jEnter = " + iEnter +" : "+ jEnter);
-					System.out.println("5/  btn name: " + btnName);
-				}
+//					System.out.println("5/  btn name: " + btnName);
+//				}
 				
-				for(int i=0; i<btnNames.length-1;i++){
-					if(btn.getName().equals(btnNames[i]))
-						System.out.println("6/ oznaci mi: "+btnNames[i+1]);
-					
-						char iChar1 = btnNames[i+1].charAt(0);
-						char jChar1 = btnNames[i+1].charAt(1);
-						x = Integer.parseInt(iChar1+"");
-						y = Integer.parseInt(jChar1+"");
-						
-						myButtonGameBoard[iEnter][jEnter].setBorderPainted(true);
-						myButtonGameBoard[x][y].setBorderPainted(true);			
+				for(int i=0; i<btnNames.length;i++){
+
+						try {
+							char iChar0 = btnNames[0].charAt(0);
+							char jChar0 = btnNames[0].charAt(1);
+							int a = Integer.parseInt(iChar0+"");
+							int b = Integer.parseInt(jChar0+"");
+							char iChar2 = btnNames[1].charAt(0);
+							char jChar2 = btnNames[1].charAt(1);
+							int c = Integer.parseInt(iChar2+"");
+							int d = Integer.parseInt(jChar2+"");
+							
+							char iChar1 = btnNames[i].charAt(0);
+							char jChar1 = btnNames[i].charAt(1);
+							x = Integer.parseInt(iChar1+"");
+							y = Integer.parseInt(jChar1+"");
+							
+							if(btnNames[i].length()==3 || a<0 || b<0 || c<0 || d<0)
+								throw new Exception();
+							else
+								myButtonGameBoard[x][y].setBorderPainted(true);
+
+						} catch (Exception e) {
+							System.out.println("Izasao si iz ogranicenja.");
+							
+							for (int m=0;m<10;m++)
+								for (int n=0;n<10;n++){
+									
+									myButtonGameBoard[m][n].setBorderPainted(false);
+								}
+						}			
 				}
 			}
 		});
@@ -112,18 +140,9 @@ public int y;
 		btn.addMouseListener(new MouseAdapter() {
 			public void mouseExited(MouseEvent e) {
 				
-				String name = btn.getName();
-				char i = name.charAt(0);
-				char j = name.charAt(1);
-				
-				iExit = Integer.parseInt(i+"");
-				jExit = Integer.parseInt(j+"");
-//				System.out.println("Exit: "+iExit+ " " +jExit);
-				btn.setBorderPainted(false);
-				
-				myButtonGameBoard[iEnter][jEnter].setBorderPainted(false);
-				myButtonGameBoard[x][y].setBorderPainted(false);
-				
+				for (int i=0;i<10;i++)
+					for (int j=0;j<10;j++)
+						myButtonGameBoard[i][j].setBorderPainted(false);	
 			}
 		});
 	}
@@ -142,7 +161,7 @@ public int y;
  * @param size
  * @return [size, myI,myJ, ... ]
  */
-	public int[] suggestedIndexes(int i, int j, String horOrVer,int size){
+	public int[] suggestedIndexes(int i, int j, char orientation,int size){
 		
 		int[] suggestIndexes=null;
 		
@@ -168,7 +187,7 @@ public int y;
 		
 		
 		
-		if(horOrVer.equals("H")){// ako je horizontalno
+		if(orientation=='H'){// ako je horizontalno
 			switch(size){
 			case 1:{			
 				suggestIndexes[0]=size;
@@ -184,7 +203,6 @@ public int y;
 				suggestIndexes[2]=jEnter;
 				suggestIndexes[3]=iEnter;
 				suggestIndexes[4]=jEnter-1;
-				System.out.println("2/  Suggest:" +suggestIndexes[3] +" "+suggestIndexes[4]);
 				return suggestIndexes;
 			}
 			// [ 0  0  1  1  1  0  0 ]
@@ -332,18 +350,21 @@ public int y;
 //		return indexOfButton;
 //	}//kraj metode
 
-
+/**
+ * Vraca niz imena dugmadi koja treba da se markiraju
+ * @param suggestedIndexes
+ * @return
+ */
 	public String[] lightTheSuggestedButtons(int[] suggestedIndexes){
 		
-		try {
-			System.out.println("3/");
-			for (int i=0;i<suggestedIndexes.length;i++) {
-				System.out.println("["+i+"]" + " = "+suggestedIndexes[i]);
-			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			//e.printStackTrace();
-		}
+//		try {
+//			System.out.println("3/");
+//			for (int i=0;i<suggestedIndexes.length;i++) {
+//				System.out.println("["+i+"]" + " = "+suggestedIndexes[i]);
+//			}
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//		}
 		
 		String[] btnNames = new String[(suggestedIndexes.length-1)/2];
 		int brojac = 0;
@@ -352,13 +373,15 @@ public int y;
 
 			btnNames[brojac] = suggestedIndexes[i]+""+suggestedIndexes[i+1];
 
+//			System.out.println("4/  From suggested array: "+btnNames[brojac]);
 			brojac++;
-			try {
-				System.out.println("4/  From suggested array: "+btnNames[brojac]);
-			} catch (Exception e) {
-			}
 		}
 		
+		String ispis="Dugmad za markiranje:  ";
+		for (String nameForMark : btnNames) {
+			ispis = ispis + " " + nameForMark;
+		}
+		System.out.println(ispis);
 		return btnNames;
 	}
 
