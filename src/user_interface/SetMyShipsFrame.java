@@ -23,10 +23,11 @@ import javax.swing.JCheckBox;
 
 import application_logic.SetMyShipsManager;
 
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class setMyShipsFrame extends JFrame {
+public class SetMyShipsFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JPanel centerPanel;
@@ -38,6 +39,8 @@ public class setMyShipsFrame extends JFrame {
 	private JPanel leftPanel;
 	public ButtonGroup groupShips;
 	public ButtonGroup groupHV;
+	
+	
 
 	/**
 	 * Launch the application.
@@ -46,7 +49,7 @@ public class setMyShipsFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					setMyShipsFrame frame = new setMyShipsFrame();
+					SetMyShipsFrame frame = new SetMyShipsFrame();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -58,7 +61,7 @@ public class setMyShipsFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public setMyShipsFrame() {
+	public SetMyShipsFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 485, 381);
 		contentPane = new JPanel();
@@ -114,6 +117,11 @@ public class setMyShipsFrame extends JFrame {
 	private JRadioButton getRdbtnOneCellShips() {
 		if (rdbtnOneCellShips == null) {
 			rdbtnOneCellShips = new JRadioButton("One cell ships:");
+			rdbtnOneCellShips.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+				}
+			});
 			rdbtnOneCellShips.setSelected(true);
 		}
 		return rdbtnOneCellShips;

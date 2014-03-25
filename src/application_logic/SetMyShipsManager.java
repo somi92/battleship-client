@@ -21,9 +21,11 @@ public static int iEnter;
 public static int jEnter;
 public int iExit;
 public int jExit;
+
 public int x;
 public int y;
-	
+
+
 	
 	public JButton[][] generateGameBoard(){
 		
@@ -41,7 +43,7 @@ public int y;
 //				borderPaintActionListener(btn);
 				enterActionListener(btn);
 //				enterActionListener(btn);
-//				exitActionListener(btn);
+				exitActionListener(btn);
 //				setToolTipEffect(btn);
 			}
 		}
@@ -74,10 +76,11 @@ public int y;
 				jEnter = Integer.parseInt(jChar+"");
 				System.out.println("1/  Enter: " + +iEnter+ " " +jEnter);
 //				btn.setBorderPainted(true);
-				
+
 //				for(int i=0 ;i<btnNames.length;i++)
 //					if(btn.getName().equals(btnNames[i]))
 //						btn.setBorderPainted(true);
+				
 				
 				String[] btnNames =	btnNames = lightTheSuggestedButtons(suggestedIndexes(iEnter, jEnter, "H", 2));
 				
@@ -116,7 +119,7 @@ public int y;
 				iExit = Integer.parseInt(i+"");
 				jExit = Integer.parseInt(j+"");
 //				System.out.println("Exit: "+iExit+ " " +jExit);
-//				btn.setBorderPainted(false);
+				btn.setBorderPainted(false);
 				
 				myButtonGameBoard[iEnter][jEnter].setBorderPainted(false);
 				myButtonGameBoard[x][y].setBorderPainted(false);
@@ -346,13 +349,16 @@ public int y;
 		int brojac = 0;
 		
 		for (int i=1;i<suggestedIndexes.length;i+=2) {
+
 			btnNames[brojac] = suggestedIndexes[i]+""+suggestedIndexes[i+1];
+
 			brojac++;
 			try {
 				System.out.println("4/  From suggested array: "+btnNames[brojac]);
 			} catch (Exception e) {
 			}
 		}
+		
 		return btnNames;
 	}
 
