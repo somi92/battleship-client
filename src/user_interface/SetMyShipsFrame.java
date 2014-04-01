@@ -104,7 +104,7 @@ public class SetMyShipsFrame extends JFrame {
 		if (centerPanel == null) {
 			centerPanel = new JPanel();
 			//centerPanel.setLayout(new MigLayout("", "[left][38.00][]", "[][][]"));
-			centerPanel.setLayout(new MigLayout("gap 0px 0px", "[][]", "[][]"));
+			centerPanel.setLayout(new MigLayout("gap 0px 0px", "[][][]", "[][][]"));
 			for(int i=0;i<10;i++){
 				for (int j=0;j<10;j++){
 					buttonGameBoard[i][j].setSize(40, 40);
@@ -229,6 +229,7 @@ public class SetMyShipsFrame extends JFrame {
 	private JLabel getLblOneCellsShip() {
 		if (lblOneCellsShip == null) {
 			lblOneCellsShip = new JLabel("5");
+			
 		}
 		return lblOneCellsShip;
 	}
@@ -265,5 +266,53 @@ public class SetMyShipsFrame extends JFrame {
 		if(rdbtnVertical.isSelected()) orijentation='V';
 		
 	}
-	
-}
+	public boolean updateLabels(){
+		
+		JRadioButton randomJB=null;
+		int moreShips=0;
+		JLabel randomL=null;
+		
+		
+		
+		if(rdbtnOneCellShips.isSelected()){
+			randomJB=rdbtnOneCellShips;
+			randomL=lblOneCellsShip;;
+			moreShips=Integer.parseInt(randomL.getText());
+		}
+		
+		if(rdbtnTwoCellShips.isSelected()){
+			randomJB=rdbtnTwoCellShips;
+			randomL=lblTwoCellsShip;;
+			moreShips=Integer.parseInt(randomL.getText());
+		}
+		
+		if(rdbtnThreeCellsShips.isSelected()){
+			randomJB=rdbtnThreeCellsShips;
+			randomL=lblThreeCellsShip;;
+			moreShips=Integer.parseInt(randomL.getText());
+		}
+		
+		
+		if(rdbtnFiveCellShips.isSelected()){
+			randomJB=rdbtnFiveCellShips;
+			randomL=lblFrourCellsShip;
+			moreShips=Integer.parseInt(randomL.getText());
+		}
+		
+		if(moreShips>0){
+			moreShips--;
+			randomL.setText(""+moreShips);
+			if(moreShips==0){
+				randomJB.setEnabled(false);
+				randomJB.setSelected(false);
+				}
+			
+			return true;
+		}
+		else{
+			randomJB.setSelected(false);
+			randomJB.setEnabled(false);
+			return false;}
+		
+	}}
+

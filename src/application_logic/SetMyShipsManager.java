@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.security.AllPermission;
+import java.util.LinkedList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,13 +18,18 @@ public class SetMyShipsManager {
 
 	public JButton[][] myButtonGameBoard = new JButton[10][10];
 	public ImageIcon papirImg = new ImageIcon(getClass().getResource("/resources/sea.png"));
-	
+	public ImageIcon ShipImage = new ImageIcon(getClass().getResource("/resources/brodic.jpg"));
+
 	//mouse enter / exit coordinates
 	public static int[] suggestedIndexes;
-public static int iEnter;
+	public static int iEnter;
 public static int jEnter;
 public int iExit;
 public int jExit;
+
+public String [] suggesetedButtonNames=null;
+public LinkedList<String> existingBoats=new LinkedList<String>();
+
 
 public int x;
 public int y;
@@ -31,6 +38,9 @@ public SetMyShipsFrame frame;
 
 
 	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public SetMyShipsManager(SetMyShipsFrame setMyShipsFrame) {
 	this.frame = setMyShipsFrame;
 }
@@ -48,6 +58,7 @@ public SetMyShipsFrame frame;
 				
 				final JButton btn = myButtonGameBoard[i][j];
 				
+				clickActionListener(btn);
 //				borderPaintActionListener(btn);
 				enterActionListener(btn);
 //				enterActionListener(btn);
@@ -59,7 +70,32 @@ public SetMyShipsFrame frame;
 		return myButtonGameBoard;
 		
 	}
-	
+	public void clickActionListener(final JButton btn){
+		btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				for(int i=0;i<suggesetedButtonNames.length;i++){
+					if(existingBoats.contains(suggesetedButtonNames[i])){
+						return;
+					}
+				
+				}
+				if(frame.updateLabels()){
+				for(int i=0;i<10;i++)
+					for(int j=0;j<10;j++){
+						if(myButtonGameBoard[i][j].isBorderPainted())
+						{
+							existingBoats.add(myButtonGameBoard[i][j].getName());
+							myButtonGameBoard[i][j].setIcon(ShipImage);
+						}
+					}
+				for(int i=0;i<existingBoats.size();i++){
+					System.out.print(" "+existingBoats.get(i));
+				}
+				
+			}}
+		});
+	}
 	public void borderPaintActionListener(final JButton btn){
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -103,25 +139,35 @@ public SetMyShipsFrame frame;
 						try {
 							char iChar0 = btnNames[0].charAt(0);
 							char jChar0 = btnNames[0].charAt(1);
+							
 							int a = Integer.parseInt(iChar0+"");
 							int b = Integer.parseInt(jChar0+"");
-							char iChar2 = btnNames[1].charAt(0);
-							char jChar2 = btnNames[1].charAt(1);
-							int c = Integer.parseInt(iChar2+"");
-							int d = Integer.parseInt(jChar2+"");
+							
 							
 							char iChar1 = btnNames[i].charAt(0);
 							char jChar1 = btnNames[i].charAt(1);
 							x = Integer.parseInt(iChar1+"");
 							y = Integer.parseInt(jChar1+"");
 							
-							if(btnNames[i].length()==3 || a<0 || b<0 || c<0 || d<0)
+							if(btnNames[i].length()==3 || a<0 || b<0 ){
+								
+							
 								throw new Exception();
-							else
+								}
+							else{
 								myButtonGameBoard[x][y].setBorderPainted(true);
+								setAllButtonsEnabled();
+							}
 
 						} catch (Exception e) {
+							
 							System.out.println("Izasao si iz ogranicenja.");
+							setAllButtonsEnabled();
+							myButtonGameBoard[iEnter][jEnter].setEnabled(false);
+
+							
+
+
 							
 							for (int m=0;m<10;m++)
 								for (int n=0;n<10;n++){
@@ -382,9 +428,14 @@ public SetMyShipsFrame frame;
 			ispis = ispis + " " + nameForMark;
 		}
 		System.out.println(ispis);
+		this.suggesetedButtonNames=btnNames;
 		return btnNames;
 	}
+	public void setAllButtonsEnabled(){
+		for(int i=0;i<10;i++)
+			for(int j=0;j<10;j++){
+				myButtonGameBoard[i][j].setEnabled(true);
+	}
 
-
-
+	}
 }
