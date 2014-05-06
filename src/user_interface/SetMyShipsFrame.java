@@ -228,14 +228,14 @@ public class SetMyShipsFrame extends JFrame {
 	}
 	private JLabel getLblOneCellsShip() {
 		if (lblOneCellsShip == null) {
-			lblOneCellsShip = new JLabel("5");
+			lblOneCellsShip = new JLabel("1");
 			
 		}
 		return lblOneCellsShip;
 	}
 	private JLabel getLblTwoCellsShip() {
 		if (lblTwoCellsShip == null) {
-			lblTwoCellsShip = new JLabel("3");
+			lblTwoCellsShip = new JLabel("1");
 		}
 		return lblTwoCellsShip;
 	}

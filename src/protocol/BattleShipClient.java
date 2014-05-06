@@ -17,7 +17,7 @@ public class BattleShipClient {
 	private String IPandPort2;
 	
 	public BattleShipClient() {
-		setState(INIT);
+		setState(BattleShipClient.INIT);
 		IPandPort1 = null;
 		IPandPort2 = null;
 	}
