@@ -30,7 +30,7 @@ public int jExit;
 public String [] suggesetedButtonNames=null;
 public LinkedList<String> existingBoats=new LinkedList<String>();
 
-
+MyGameBoardMask gb1= new MyGameBoardMask();
 public int x;
 public int y;
 
@@ -45,6 +45,9 @@ public SetMyShipsFrame frame;
 	this.frame = setMyShipsFrame;
 }
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public JButton[][] generateGameBoard(){
 		
 		for(int i=0;i<10;i++){
@@ -80,20 +83,25 @@ public SetMyShipsFrame frame;
 					}
 				
 				}
-				if(frame.updateLabels()){
+				int tipBroda=frame.updateLabels();
+				if((tipBroda)>0){
+					
+					
 				for(int i=0;i<10;i++)
 					for(int j=0;j<10;j++){
 						if(myButtonGameBoard[i][j].isBorderPainted())
 						{
 							existingBoats.add(myButtonGameBoard[i][j].getName());
 							myButtonGameBoard[i][j].setIcon(ShipImage);
+							gb1.FillStartMatrix(i,j,tipBroda);
 						}
 					}
 				for(int i=0;i<existingBoats.size();i++){
 					System.out.print(" "+existingBoats.get(i));
 				}
 				
-			}}
+			}
+				gb1.ispisi();}
 		});
 	}
 	public void borderPaintActionListener(final JButton btn){
@@ -438,4 +446,6 @@ public SetMyShipsFrame frame;
 	}
 
 	}
+	
+	
 }
