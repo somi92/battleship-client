@@ -2,8 +2,74 @@ package application_logic;
 
 public class MyGameBoardMask {
 
-private int[][] gameBoard;
+private int[][] gameBoard=new int [10][10];	
+
+public int [] [] logicStartMatrix= new int [10] [10];
+
+public static final int PRAZAN=0; // nema broda na tom polju
+public static final int POSTAVLJEN=1;
+public static final int POGODJEN=2;
+public static final int POTOPLJEN=3;
+public static final int PROMASEN=4;
+private int shipTypeOneSum=2;
+private int shipTypeTwoSum=4;
+private int shipTypeThree1Sum=9;
+private int shipTypeThree2Sum=12;
+private int shipTypeFiveSum=25;
+
+public void FillStartMatrix(int k, int l, int tip){
 	
+	
+	
+			gameBoard[k][l]=tip;
+		
+}
+public int takeAHit(int m, int n){
+	
+	int field=gameBoard[m][n];
+	switch(field){
+	case 1: {
+		shipTypeOneSum=shipTypeOneSum-1;
+		gameBoard[m][n]=-field;
+	}
+	break;
+	case 2:{
+		shipTypeTwoSum=shipTypeTwoSum-2;
+		gameBoard[m][n]=-field;
+	}
+		break;
+	case 3: {
+		shipTypeThree1Sum-=3;
+		gameBoard[m][n]=-field;
+	}
+	break;
+	case 4: {
+		shipTypeThree2Sum-=4;
+		gameBoard[m][n]=-field;
+	
+	}
+	case 5: {
+		shipTypeFiveSum-=5;
+		gameBoard[m][n]=-field;
+	
+	}
+	break;
+
+	}
+	return -field;
+}
+
+
+
+public void ispisi(){
+
+	for (int[] i : gameBoard) {
+		for (int j : i) {
+			System.out.print(j);
+		}
+		System.out.println();
+	}
+}
 
 	public MyGameBoardMask(){
 		for(int i=0;i<10;i++){
