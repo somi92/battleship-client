@@ -43,19 +43,27 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 	}
 	
 	@Override
-	public void initializeClientMediator(String mainServerIP, int mainServerPort) throws IOException {
+	public void initializeServerCommunication(String mainServerIP, int mainServerPort) throws IOException {
 		// TODO Auto-generated method stub
 		clientSocket = new Socket(mainServerIP, mainServerPort);
 		clientInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		clientOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-//		peer1Socket = new Socket();
-//		peer1InputStream= new BufferedReader(new InputStreamReader(peer1Socket.getInputStream()));
-//		peer1OutputStream= new DataOutputStream(peer1Socket.getOutputStream());
-//		peer2Socket=new Socket();
-//		peer2InputStream= new BufferedReader(new InputStreamReader(peer2Socket.getInputStream()));
-//		peer2OutputStream= new DataOutputStream(peer2Socket.getOutputStream());
+
 	}
 
+	@Override
+	public void initializePeersComunnication(String peer1Ip, int peer1Port,
+			String peer2Ip, int peer2Port) throws IOException{
+		// TODO Auto-generated method stub
+		peer1Socket = new Socket(peer1Ip,peer1Port);
+		peer1InputStream= new BufferedReader(new InputStreamReader(peer1Socket.getInputStream()));
+		peer1OutputStream= new DataOutputStream(peer1Socket.getOutputStream());
+		peer2Socket=new Socket(peer1Ip,peer1Port);
+		peer2InputStream= new BufferedReader(new InputStreamReader(peer2Socket.getInputStream()));
+		peer2OutputStream= new DataOutputStream(peer2Socket.getOutputStream());
+		
+	}
+	
 	@Override
 	public String sendToMainServer(String message) throws IOException {
 		// TODO Auto-generated method stub
@@ -82,6 +90,8 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 		// TODO Auto-generated method stub
 		
 	}
+
+
 
 	
 }
