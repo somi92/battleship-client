@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 import interfaces.ClientMediator;
 import interfaces.NetworkMediator;
@@ -42,17 +43,25 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 	}
 	
 	@Override
-	public void initializeClientMediator() throws IOException {
+	public void initializeClientMediator(String mainServerIP, int mainServerPort) throws IOException {
 		// TODO Auto-generated method stub
-		clientSocket = new Socket();
+		clientSocket = new Socket(mainServerIP, mainServerPort);
 		clientInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		clientOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+//		peer1Socket = new Socket();
+//		peer1InputStream= new BufferedReader(new InputStreamReader(peer1Socket.getInputStream()));
+//		peer1OutputStream= new DataOutputStream(peer1Socket.getOutputStream());
+//		peer2Socket=new Socket();
+//		peer2InputStream= new BufferedReader(new InputStreamReader(peer2Socket.getInputStream()));
+//		peer2OutputStream= new DataOutputStream(peer2Socket.getOutputStream());
 	}
 
 	@Override
-	public String sendToMainServer(String message) {
+	public String sendToMainServer(String message) throws IOException {
 		// TODO Auto-generated method stub
-		return message;
+		clientOutputStream.writeBytes(message) ;
+		String response = clientInputStream.readLine();
+		return response;
 		
 	}
 
