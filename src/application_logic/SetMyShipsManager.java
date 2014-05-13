@@ -98,13 +98,14 @@ public SetMyShipsFrame frame;
 //					System.out.println("5/  btn name: " + btnName);
 //				}
 				
-				for(int i=0; i<btnNames.length;i++){
+				try {
+					for(int i=0; i<btnNames.length;i++){
 
-						try {
 							char iChar0 = btnNames[0].charAt(0);
 							char jChar0 = btnNames[0].charAt(1);
 							int a = Integer.parseInt(iChar0+"");
 							int b = Integer.parseInt(jChar0+"");
+							
 							char iChar2 = btnNames[1].charAt(0);
 							char jChar2 = btnNames[1].charAt(1);
 							int c = Integer.parseInt(iChar2+"");
@@ -119,7 +120,7 @@ public SetMyShipsFrame frame;
 								throw new Exception();
 							else
 								myButtonGameBoard[x][y].setBorderPainted(true);
-
+					}
 						} catch (Exception e) {
 							System.out.println("Izasao si iz ogranicenja.");
 							
@@ -130,7 +131,7 @@ public SetMyShipsFrame frame;
 								}
 						}			
 				}
-			}
+			
 		});
 	}
 	
