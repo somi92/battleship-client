@@ -104,7 +104,7 @@ public class SetMyShipsFrame extends JFrame {
 		if (centerPanel == null) {
 			centerPanel = new JPanel();
 			//centerPanel.setLayout(new MigLayout("", "[left][38.00][]", "[][][]"));
-			centerPanel.setLayout(new MigLayout("gap 0px 0px", "[][][]", "[][][]"));
+			centerPanel.setLayout(new MigLayout("gap 0px 0px", "[][][]", "[][][][][][]"));
 			for(int i=0;i<10;i++){
 				for (int j=0;j<10;j++){
 					buttonGameBoard[i][j].setSize(40, 40);
@@ -266,8 +266,8 @@ public class SetMyShipsFrame extends JFrame {
 		if(rdbtnVertical.isSelected()) orijentation='V';
 		
 	}
-	public boolean updateLabels(){
-		
+	public int updateLabels(){
+		int indeks=0;
 		JRadioButton randomJB=null;
 		int moreShips=0;
 		JLabel randomL=null;
@@ -275,25 +275,33 @@ public class SetMyShipsFrame extends JFrame {
 		
 		
 		if(rdbtnOneCellShips.isSelected()){
+			indeks=1;
 			randomJB=rdbtnOneCellShips;
 			randomL=lblOneCellsShip;;
 			moreShips=Integer.parseInt(randomL.getText());
 		}
 		
 		if(rdbtnTwoCellShips.isSelected()){
+			indeks=2;
 			randomJB=rdbtnTwoCellShips;
 			randomL=lblTwoCellsShip;;
 			moreShips=Integer.parseInt(randomL.getText());
 		}
 		
 		if(rdbtnThreeCellsShips.isSelected()){
+			
 			randomJB=rdbtnThreeCellsShips;
-			randomL=lblThreeCellsShip;;
+			randomL=lblThreeCellsShip;
+			if(randomL.getText().equals("2"))
+				indeks=3;
+			else
+				indeks=4;//kada se drugi put bira brod tipa 3 celije
 			moreShips=Integer.parseInt(randomL.getText());
 		}
 		
 		
 		if(rdbtnFiveCellShips.isSelected()){
+			indeks=5;
 			randomJB=rdbtnFiveCellShips;
 			randomL=lblFrourCellsShip;
 			moreShips=Integer.parseInt(randomL.getText());
@@ -307,12 +315,13 @@ public class SetMyShipsFrame extends JFrame {
 				randomJB.setSelected(false);
 				}
 			
-			return true;
+			return indeks;
 		}
 		else{
 			randomJB.setSelected(false);
 			randomJB.setEnabled(false);
-			return false;}
+			return -1;}
 		
-	}}
+	}	
+}
 

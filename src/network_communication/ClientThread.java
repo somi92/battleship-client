@@ -87,7 +87,6 @@ public class ClientThread implements Runnable {
 				break;
 		
 			}
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
