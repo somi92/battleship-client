@@ -113,11 +113,11 @@ public class BattleShipClient {
 	
 	public String repeatConnectionMessage() {
 		setState(BattleShipClient.WAIT);
-		return "REPEAT";
+		return "REPEAT"+'\n';
 	}
 	
 	public String startMessage() {
 		setState(BattleShipClient.BYE);
-		return "START";
+		return "START"+'\n';
 	}
 }
