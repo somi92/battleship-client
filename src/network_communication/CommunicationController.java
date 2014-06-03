@@ -80,7 +80,7 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 	}
 
 	@Override
-	public void connectToPeers(String params) {
+	public void connectToPeers(String message) {
 		// TODO Auto-generated method stub
 		
 	}
