@@ -18,8 +18,10 @@ public class BattleShipPeer {
 	private String usernamePeer1;
 	private String usernamePeer2;
 	
+	private int myRandomNumber;
 	private int peer1RndNubmer;
 	private int peer2RndNumber;
+	
 	
 	public BattleShipPeer() {
 		this.status = BattleShipPeer.INIT;
@@ -70,13 +72,38 @@ public class BattleShipPeer {
 					return status;
 				} else if(RNDcounter == 2) {
 					peer2RndNumber = Integer.parseInt(pOptions);
-					/// metoda za postavljanje indeksa
-					status = BattleShipPeer.PLAYING;
+					boolean rndStatus = calculateIndexes();
+					if(rndStatus) {
+						status = BattleShipPeer.PLAYING;
+					} else {
+						status = BattleShipPeer.SYNCHRONIZED;
+					}
 					return status;
 				}	
 			}
 		}
 		
 		return 0;
+	}
+	
+	private boolean calculateIndexes() {
+		if(myIndex == peer1RndNubmer || myIndex == peer2RndNumber || peer1RndNubmer == peer2RndNumber) {
+			return false;
+		}
+		if(myIndex > peer1RndNubmer) {
+			if(myIndex > peer2RndNumber) {
+				myIndex = 1;
+			} else {
+				myIndex = 2;
+			}
+		} else {
+			if(myIndex > peer2RndNumber) {
+				myIndex = 2;
+			}
+			else {
+				myIndex = 3;
+			}
+		}
+		return true;
 	}
 }

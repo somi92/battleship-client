@@ -3,23 +3,28 @@ package network_communication;
 import java.io.IOException;
 
 import protocol.BattleShipClient;
+import protocol.BattleShipPeer;
 
 import interfaces.ClientMediator;
+import interfaces.ClientEventObserver;
 
-public class ClientThread implements Runnable {
+public class ClientThread implements Runnable, ClientEventObserver {
 
 	private ClientMediator mediator;
-	private BattleShipClient protocol;
+	private BattleShipClient clientProtocol;
+	private BattleShipPeer peersProtocol;
 	
 	private String mainServerIP;
 	private int mainServerPort;
 	
 	
-	public ClientThread(ClientMediator mediator) {
+	public ClientThread(ClientMediator mediator, BattleShipPeer peersProtocol) {
 		this.mediator = mediator;
-		protocol = new BattleShipClient();
+		this.clientProtocol = new BattleShipClient();
+		this.peersProtocol = peersProtocol;
 		try {
 			this.mediator.initializeServerCommunication(mainServerIP, mainServerPort);
+//			this.mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port)
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,12 +53,15 @@ public class ClientThread implements Runnable {
 		
 	}
 	
-	public void connectToMainServer() {
-		String message = protocol.mainServerConnectionMessage();
+	@Override
+	public void connectToMainServer(int listeningPort) {
+		// TODO Auto-generated method stub
+		clientProtocol.setMyPort(listeningPort);
+		String message = clientProtocol.mainServerConnectionMessage();
 		try {
 			
 			String response = mediator.sendToMainServer(message);
-			int responseCode = protocol.parseProtocolMessage(response);
+			int responseCode = clientProtocol.parseProtocolMessage(response);
 		
 			switch (responseCode){
 
@@ -63,8 +71,8 @@ public class ClientThread implements Runnable {
 				break;
 				
 				case BattleShipClient.START: { 
-					String[] peer1 = protocol.getIPandPort1().split(":");
-					String[] peer2 = protocol.getIPandPort2().split(":");
+					String[] peer1 = clientProtocol.getIPandPort1().split(":");
+					String[] peer2 = clientProtocol.getIPandPort2().split(":");
 					
 					String peer1Ip = peer1[0];
 					int peer1Port = Integer.parseInt(peer1[1]);
@@ -91,6 +99,12 @@ public class ClientThread implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void receiveMessageFromPeers(String message) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
