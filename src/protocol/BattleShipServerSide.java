@@ -2,7 +2,8 @@ package protocol;
 
 public class BattleShipServerSide {
 	
-	public static final int INIT = 0;
+	public static final int INIT = 0;	
 	
-	
+
 }
+

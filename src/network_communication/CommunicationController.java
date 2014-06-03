@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketAddress;
 
 import interfaces.ClientMediator;
 import interfaces.NetworkMediator;
@@ -48,7 +47,6 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 		clientSocket = new Socket(mainServerIP, mainServerPort);
 		clientInputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		clientOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-
 	}
 
 	@Override

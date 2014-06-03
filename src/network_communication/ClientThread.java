@@ -53,13 +53,15 @@ public class ClientThread implements Runnable {
 		try {
 			
 			String response = mediator.sendToMainServer(message);
-			int responseCode=protocol.parseProtocolMessage(response);
-		
+			int responseCode = protocol.parseProtocolMessage(response);
+
 			switch (responseCode){
 
 				case BattleShipClient.WAIT: { 
 					//obavesti klijenta da se cekaju igraci za igru
 				}
+				break;
+				
 				case BattleShipClient.START: { 
 					String[] peer1 = protocol.getIPandPort1().split(":");
 					String[] peer2 = protocol.getIPandPort2().split(":");
@@ -71,19 +73,20 @@ public class ClientThread implements Runnable {
 					int peer2Port = Integer.parseInt(peer2[1]);
 					
 					mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port);
-					
-					
-					
-			}
-			case BattleShipClient.BYE: {
+				}
+				break;
 				
-			}
-			case BattleShipClient.ERROR: { 
+				case BattleShipClient.BYE: {
 				
-			}
+				}
+				break;
+				
+				case BattleShipClient.ERROR: { 
+				
+				}
+				break;
 		
 			}
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
