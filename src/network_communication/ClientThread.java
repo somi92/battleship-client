@@ -1,15 +1,16 @@
 package network_communication;
 
 import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
 
 import protocol.BattleShipClient;
 import protocol.BattleShipPeer;
 
 import interfaces.ClientMediator;
-import interfaces.ClientEventObserver;
 
-public class ClientThread implements Runnable, ClientEventObserver {
+public class ClientThread implements Runnable {
 
+	private BlockingQueue<String> messageQueue;
 	private ClientMediator mediator;
 	private BattleShipClient clientProtocol;
 	private BattleShipPeer peersProtocol;
@@ -17,11 +18,12 @@ public class ClientThread implements Runnable, ClientEventObserver {
 	private String mainServerIP;
 	private int mainServerPort;
 	
+	private String username;
 	
-	public ClientThread(ClientMediator mediator, BattleShipPeer peersProtocol) {
+	public ClientThread(ClientMediator mediator) {
 		this.mediator = mediator;
 		this.clientProtocol = new BattleShipClient();
-		this.peersProtocol = peersProtocol;
+		this.peersProtocol = new BattleShipPeer();
 		try {
 			this.mediator.initializeServerCommunication(mainServerIP, mainServerPort);
 //			this.mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port)
@@ -46,17 +48,40 @@ public class ClientThread implements Runnable, ClientEventObserver {
 	public void setMainServerPort(int mainServerPort) {
 		this.mainServerPort = mainServerPort;
 	}
+	
+	public void setUserName(String username) {
+		this.username = username;
+	}
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		
+		String messsage;
+		try {
+			while((messsage = messageQueue.take()) != null) {
+				if(messsage.startsWith("CONN")) {
+					String[] parts = messsage.split(" ");
+					String[] ipAndPort = parts[1].split(":");
+					String IP = ipAndPort[0];
+					int port = Integer.parseInt(ipAndPort[1]);
+//					clientProtocol.setMyPort(port);
+					connectToMainServer(IP, port);
+				} else {
+					
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 	
-	@Override
-	public void connectToMainServer(int listeningPort) {
+	public void connectToMainServer(String IP, int listeningPort) {
 		// TODO Auto-generated method stub
+		
+		clientProtocol.setMyIP(IP);
 		clientProtocol.setMyPort(listeningPort);
+		clientProtocol.setUserName(username);
+		
 		String message = clientProtocol.mainServerConnectionMessage();
 		try {
 			
@@ -67,6 +92,7 @@ public class ClientThread implements Runnable, ClientEventObserver {
 
 				case BattleShipClient.WAIT: { 
 					//obavesti klijenta da se cekaju igraci za igru
+					System.out.println("CEKANJE");
 				}
 				break;
 				
@@ -81,11 +107,13 @@ public class ClientThread implements Runnable, ClientEventObserver {
 					int peer2Port = Integer.parseInt(peer2[1]);
 					
 					mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port);
+//					peersProtocol
+//					mediator.connectToPeers(params);
 				}
 				break;
 				
 				case BattleShipClient.BYE: {
-				
+					
 				}
 				break;
 				
@@ -101,10 +129,9 @@ public class ClientThread implements Runnable, ClientEventObserver {
 		}
 	}
 
-	@Override
-	public void receiveMessageFromPeers(String message) {
-		// TODO Auto-generated method stub
-		
-	}
+//	public void receiveMessageFromPeers(String message) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 }

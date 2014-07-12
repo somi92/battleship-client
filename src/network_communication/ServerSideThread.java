@@ -1,10 +1,12 @@
 package network_communication;
 
-import interfaces.ClientEventObserver;
-
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
-import java.util.LinkedList;
+import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -12,27 +14,25 @@ import javax.swing.JOptionPane;
 
 public class ServerSideThread implements Runnable {
 	
+	private BlockingQueue<String> messageQueue;
 	private int listeningPort;
 	private ServerSocket serverSide;
 	private ExecutorService serverSideExecutor;
 	
-	
-	private LinkedList<ClientEventObserver> observers;
-	private ClientEventObserver clientObserver;
-	
 	public ServerSideThread() {
-		this.observers = new LinkedList<ClientEventObserver>();
+
 	}
 	
-	public ServerSideThread(ClientEventObserver obsv) {
+	public ServerSideThread(BlockingQueue<String> messageQueue) {
 		this();
-		clientObserver = obsv;
-	}
-	
-	public void setClientEventObserver(ClientEventObserver clientObserver) {
-		this.clientObserver = clientObserver;
+		this.messageQueue = messageQueue;
 	}
 
+	public ServerSideThread(BlockingQueue<String> messageQueue, int listeningPort) {
+		this(messageQueue);
+		this.listeningPort = listeningPort;
+	}
+	
 	private void setListeningPort(int listeningPort) {
 		this.listeningPort = listeningPort;
 	}
@@ -57,25 +57,74 @@ public class ServerSideThread implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		startServerListener(this.listeningPort);
+		startServerListener(listeningPort);
 		serverSideExecutor = Executors.newFixedThreadPool(2);
+		
+		// this thread needs to signal the client thread to start and pass it the listening port
+		try {
+			messageQueue.put("CONN "+serverSide.getInetAddress().toString()+":"+listeningPort+'\n');
+			
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		while(true) {
 			try {
-				serverSideExecutor.execute(new ReceiverThread(serverSide.accept(), this));
+				serverSideExecutor.execute(new ReceiverThread(serverSide.accept()));
 			} catch (Exception e) {
 				// TODO: handle exception
+				e.getMessage();
 				return;
 			}
 		}
 	}
 	
-	public void startMainServerConnection() {
-		clientObserver.connectToMainServer(listeningPort);
-	}
+	/********************** Inner class - receiver thread ***********************************/
 	
-	public synchronized void notifyClientObserver(String message) {
-		clientObserver.receiveMessageFromPeers(message);
-	}
+	public class ReceiverThread implements Runnable {
+		
+		private Socket communicationSocket;
+		BufferedReader clientInput;
+		DataOutputStream clientOutput;
+		
+		public ReceiverThread(Socket communicationSocket) {
+			this.communicationSocket = communicationSocket;
+		}
 
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			try {
+				
+				String clientMessage = "";
+				clientInput = new BufferedReader(new InputStreamReader(communicationSocket.getInputStream()));
+				clientOutput = new DataOutputStream(communicationSocket.getOutputStream());
+				
+				while(true) {
+					clientMessage = clientInput.readLine();
+					messageQueue.put(clientMessage);
+					clientOutput.writeBytes("OK"+'\n');
+				}
+			} catch (IOException e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			} finally {
+				try {
+					clientInput.close();
+					clientOutput.close();
+					communicationSocket.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		
+	}
+	/*********************************************************/
 }
