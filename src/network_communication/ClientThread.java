@@ -97,14 +97,14 @@ public class ClientThread implements Runnable {
 				break;
 				
 				case BattleShipClient.START: { 
-					String[] peer1 = clientProtocol.getIPandPort1().split(":");
-					String[] peer2 = clientProtocol.getIPandPort2().split(":");
+//					String[] peer1 = clientProtocol.getIPandPort1().split(":");
+//					String[] peer2 = clientProtocol.getIPandPort2().split(":");
 					
-					String peer1Ip = peer1[0];
-					int peer1Port = Integer.parseInt(peer1[1]);
+					String peer1Ip = clientProtocol.getIP1();
+					int peer1Port = clientProtocol.getPort1();
 					
-					String peer2Ip = peer2[0];
-					int peer2Port = Integer.parseInt(peer2[1]);
+					String peer2Ip = clientProtocol.getIP2();
+					int peer2Port = clientProtocol.getPort2();
 					
 					mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port);
 //					peersProtocol

@@ -9,7 +9,7 @@ public class BattleShipPeer {
 	public static final int BYE = 4;
 	public static final int ERROR = 5;
 	
-	private int status;
+	private int state;
 	private int myIndex;
 	
 	private int SYNcounter;
@@ -24,7 +24,7 @@ public class BattleShipPeer {
 	
 	
 	public BattleShipPeer() {
-		this.status = BattleShipPeer.INIT;
+		this.state = BattleShipPeer.INIT;
 		this.myIndex = 0;
 		this.SYNcounter = 0;
 		this.RNDcounter = 0;
@@ -50,11 +50,11 @@ public class BattleShipPeer {
 				SYNcounter++;
 				if(SYNcounter == 1) {
 					usernamePeer1 = messageParts[1];
-					return status;
+					return state;
 				} else if(SYNcounter == 2) {
 					usernamePeer2 = messageParts[1];
-					status = BattleShipPeer.SYNCHRONIZED;
-					return status;
+					state = BattleShipPeer.SYNCHRONIZED;
+					return state;
 				}
 			}	
 		}
@@ -69,16 +69,16 @@ public class BattleShipPeer {
 				RNDcounter++;
 				if(RNDcounter == 1) {
 					peer1RndNubmer = Integer.parseInt(pOptions);
-					return status;
+					return state;
 				} else if(RNDcounter == 2) {
 					peer2RndNumber = Integer.parseInt(pOptions);
 					boolean rndStatus = calculateIndexes();
 					if(rndStatus) {
-						status = BattleShipPeer.PLAYING;
+						state = BattleShipPeer.PLAYING;
 					} else {
-						status = BattleShipPeer.SYNCHRONIZED;
+						state = BattleShipPeer.SYNCHRONIZED;
 					}
-					return status;
+					return state;
 				}	
 			}
 		}
