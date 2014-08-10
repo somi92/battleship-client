@@ -1,5 +1,8 @@
 package protocol;
 
+import interfaces.ClientEventListener;
+import interfaces.PeerEventListener;
+
 /**
  * Facade class for protocols
  * */
@@ -7,6 +10,9 @@ public class BattleShipProtocol {
 	
 	private BattleShipClient clientProtocol;
 	private BattleShipPeer peerProtocol;
+	
+	ClientEventListener clientListener;
+	PeerEventListener peerListener;
 	
 	private String myIP;
 	private int myPort;
@@ -101,6 +107,22 @@ public class BattleShipProtocol {
 		peerProtocol = new BattleShipPeer();
 	}
 	
+	public void setClientListener(ClientEventListener listener) {
+		this.clientListener = listener;
+	}
+	
+	public void setPeerListener(PeerEventListener listener) {
+		this.peerListener = listener;
+	}
+	
+	public ClientEventListener getClientEventListener() {
+		return clientListener;
+	}
+	
+	public PeerEventListener getPeerEventListener() {
+		return peerListener;
+	}
+	
 	/*** delegate method calls for client protocol ***/
 	public int parseMainServerMessage(String message) {
 		return clientProtocol.parseProtocolMessage(message);
@@ -124,4 +146,29 @@ public class BattleShipProtocol {
 	public int parsePeerMessage(String message) {
 		return peerProtocol.parseProtocolMessage(message);
 	}
+	
+	public String getSynMessage() {
+		return peerProtocol.synMessage();
+	}
+	
+	public String getRndMessage() {
+		return peerProtocol.rndMessage();
+	}
+	
+	public String getShtMessage(String targetUserName, int coorI, int coorJ) {
+		return peerProtocol.shootMessage(targetUserName, coorI, coorJ);
+	}
+	
+	public String getRspMessage(int coorI, int coorJ, int status) {
+		return peerProtocol.responseMessage(coorI, coorJ, status);
+	}
+	
+	public String getNextMessage() {
+		return peerProtocol.nextMessage();
+	}
+	
+	public String getByeMessage() {
+		return peerProtocol.byeMessage();
+	}
+	
 }

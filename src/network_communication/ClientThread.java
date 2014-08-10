@@ -6,7 +6,9 @@ import java.util.concurrent.BlockingQueue;
 import protocol.BattleShipClient;
 import protocol.BattleShipProtocol;
 
+import interfaces.ClientEventListener;
 import interfaces.ClientMediator;
+import interfaces.PeerEventListener;
 
 public class ClientThread implements Runnable {
 
@@ -93,8 +95,9 @@ public class ClientThread implements Runnable {
 			switch (responseCode){
 
 				case BattleShipClient.WAIT: { 
-					//obavesti klijenta da se cekaju igraci za igru
-					System.out.println("CEKANJE");
+					//obavesti klijenta da se cekaju igraci za igru, event listener
+					// ovdje ne mora nista da se radi, event moze da se okine iz protokola
+					protocol.getClientEventListener().onWait("Server je prihvatio zahtev. Cekaju se igraci...");
 				}
 				break;
 				
@@ -132,4 +135,12 @@ public class ClientThread implements Runnable {
 		}
 	}
 
+	// listener setters
+	public void setClientEventListener(ClientEventListener listener) {
+		protocol.setClientListener(listener);
+	}
+	
+	public void setPeerEventListener(PeerEventListener listener) {
+		protocol.setPeerListener(listener);
+	}
 }
