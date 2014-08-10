@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 import protocol.BattleShipClient;
-import protocol.BattleShipPeer;
+import protocol.BattleShipProtocol;
 
 import interfaces.ClientMediator;
 
@@ -12,8 +12,7 @@ public class ClientThread implements Runnable {
 
 	private BlockingQueue<String> messageQueue;
 	private ClientMediator mediator;
-	private BattleShipClient clientProtocol;
-	private BattleShipPeer peersProtocol;
+	private BattleShipProtocol protocol;
 	
 	private String mainServerIP;
 	private int mainServerPort;
@@ -22,11 +21,9 @@ public class ClientThread implements Runnable {
 	
 	public ClientThread(ClientMediator mediator) {
 		this.mediator = mediator;
-		this.clientProtocol = new BattleShipClient();
-		this.peersProtocol = new BattleShipPeer();
+		this.protocol = new BattleShipProtocol();
 		try {
 			this.mediator.initializeServerCommunication(mainServerIP, mainServerPort);
-//			this.mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port)
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,7 +61,11 @@ public class ClientThread implements Runnable {
 					String[] ipAndPort = parts[1].split(":");
 					String IP = ipAndPort[0];
 					int port = Integer.parseInt(ipAndPort[1]);
+					String username = ipAndPort[2];
 //					clientProtocol.setMyPort(port);
+					protocol.setMyIP(IP);
+					protocol.setMyPort(port);
+					protocol.setMyUserName(username);
 					connectToMainServer(IP, port);
 				} else {
 					
@@ -77,16 +78,17 @@ public class ClientThread implements Runnable {
 	
 	public void connectToMainServer(String IP, int listeningPort) {
 		// TODO Auto-generated method stub
+
+		protocol.setMyIP(IP);
+		protocol.setMyPort(listeningPort);
+		protocol.setMyUserName(username);
 		
-		clientProtocol.setMyIP(IP);
-		clientProtocol.setMyPort(listeningPort);
-		clientProtocol.setUserName(username);
+		String message = protocol.getMainServerConnectionMessage();
 		
-		String message = clientProtocol.mainServerConnectionMessage();
 		try {
 			
 			String response = mediator.sendToMainServer(message);
-			int responseCode = clientProtocol.parseProtocolMessage(response);
+			int responseCode = protocol.parseMainServerMessage(response);
 		
 			switch (responseCode){
 
@@ -97,16 +99,17 @@ public class ClientThread implements Runnable {
 				break;
 				
 				case BattleShipClient.START: { 
-//					String[] peer1 = clientProtocol.getIPandPort1().split(":");
-//					String[] peer2 = clientProtocol.getIPandPort2().split(":");
 					
-					String peer1Ip = clientProtocol.getIP1();
-					int peer1Port = clientProtocol.getPort1();
+					String peer1Ip = protocol.getPeer1IP();
+					int peer1Port = protocol.getPeer1Port();
 					
-					String peer2Ip = clientProtocol.getIP2();
-					int peer2Port = clientProtocol.getPort2();
+
+					String peer2Ip = protocol.getPeer2IP();
+					int peer2Port = protocol.getPeer2Port();
 					
 					mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port);
+					
+//				 	ovdje ce ici event listener za pocetak igre
 //					peersProtocol
 //					mediator.connectToPeers(params);
 				}
@@ -128,10 +131,5 @@ public class ClientThread implements Runnable {
 			e.printStackTrace();
 		}
 	}
-
-//	public void receiveMessageFromPeers(String message) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
 }
