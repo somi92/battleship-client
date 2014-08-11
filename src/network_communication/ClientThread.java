@@ -96,7 +96,6 @@ public class ClientThread implements Runnable {
 
 				case BattleShipClient.WAIT: { 
 					//obavesti klijenta da se cekaju igraci za igru, event listener
-					// ovdje ne mora nista da se radi, event moze da se okine iz protokola
 					protocol.getClientEventListener().onWait("Server je prihvatio zahtev. Cekaju se igraci...");
 				}
 				break;
