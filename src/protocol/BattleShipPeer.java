@@ -1,5 +1,9 @@
 package protocol;
 
+import java.util.Random;
+
+import utilities.BattleShipStatus;
+
 public class BattleShipPeer {
 
 	public static final int INIT = 0;
@@ -9,23 +13,37 @@ public class BattleShipPeer {
 	public static final int BYE = 4;
 	public static final int ERROR = 5;
 	
-	private int status;
+	private int state;
 	private int myIndex;
+	private int currentIndex;
+	
+	private boolean fleetDestroyed;
 	
 	private int SYNcounter;
 	private int RNDcounter;
 	
-	private String usernamePeer1;
-	private String usernamePeer2;
+	private BattleShipProtocol parent;
 	
+//	private String usernamePeer1;
+//	private String usernamePeer2;
+	
+	private int myRandomNumber;
 	private int peer1RndNubmer;
 	private int peer2RndNumber;
 	
+	
 	public BattleShipPeer() {
-		this.status = BattleShipPeer.INIT;
+		this.state = BattleShipPeer.INIT;
 		this.myIndex = 0;
+		this.currentIndex = 0;
+		this.fleetDestroyed = false;
 		this.SYNcounter = 0;
 		this.RNDcounter = 0;
+	}
+	
+	public BattleShipPeer(BattleShipProtocol parent) {
+		this();
+		this.parent = parent;
 	}
 	
 	public int parseProtocolMessage(String message) {
@@ -36,47 +54,187 @@ public class BattleShipPeer {
 		
 		String[] messageParts = message.split("_");
 		String pMethod = "";
-		String pOptions = "";
 		String pData = "";
+		String pUser = "";
+		String pCoords = "";
 		
 		if(messageParts.length == 2) {
 			
 			pMethod = messageParts[0];
-			pData = messageParts[1];
+			pUser = messageParts[1];
 			
 			if(pMethod.equals("SYN")) {
 				SYNcounter++;
 				if(SYNcounter == 1) {
-					usernamePeer1 = messageParts[1];
-					return status;
+					parent.setPeer1UserName(messageParts[1]);
+//					usernamePeer1 = messageParts[1];
+					return state;
 				} else if(SYNcounter == 2) {
-					usernamePeer2 = messageParts[1];
-					status = BattleShipPeer.SYNCHRONIZED;
-					return status;
+					parent.setPeer2UserName(messageParts[1]);
+//					usernamePeer2 = messageParts[1];
+					state = BattleShipPeer.SYNCHRONIZED;
+					return state;
 				}
-			}	
+			}
+			
+			if(pMethod.equals("BYE")) {
+				// implement BYE
+			}
 		}
 		
 		if(messageParts.length == 3) {
 			
 			pMethod = messageParts[0];
-			pData = messageParts[1];
-			pOptions = messageParts[2];
+			pUser = messageParts[1];
+			pData = messageParts[2];
 			
 			if(pMethod.equals("RND")) {
 				RNDcounter++;
 				if(RNDcounter == 1) {
-					peer1RndNubmer = Integer.parseInt(pOptions);
-					return status;
+					peer1RndNubmer = Integer.parseInt(pData);
+					return state;
 				} else if(RNDcounter == 2) {
-					peer2RndNumber = Integer.parseInt(pOptions);
-					/// metoda za postavljanje indeksa
-					status = BattleShipPeer.PLAYING;
-					return status;
+					peer2RndNumber = Integer.parseInt(pData);
+					boolean rndStatus = calculateIndexes();
+					if(rndStatus) {
+						state = BattleShipPeer.PLAYING;
+					} else {
+						state = BattleShipPeer.SYNCHRONIZED;
+					}
+					return state;
 				}	
+			}
+			
+			if(pMethod.equals("SHT")) {
+				// call callback method to trigger event and pass target username and coordinates, but only if i am being attacked
+				String targetUsername = pUser;
+				if(targetUsername.equals(parent.getMyUserName())) {
+					state = BattleShipPeer.PLAYING;
+					String[] coors = pData.split(":");
+					int i = Integer.parseInt(coors[0]);
+					int j = Integer.parseInt(coors[1]);
+					// trigger event
+					return state;
+				} else {
+					state = BattleShipPeer.PLAYING;
+				}
+				return state;
+			}
+			
+			if(pMethod.equals("NXT")) {
+				String username = pUser;
+				int nextIndex = Integer.parseInt(pData);
+				boolean myTurn = false;
+				currentIndex = nextIndex;
+				myTurn = (currentIndex == myIndex ? true : false);
+				// call callback (same as rsp but without coords and status, consider using overloading)
+				state = BattleShipPeer.PLAYING;
+				return state;
+			}
+		}
+		
+		if(messageParts.length == 4) {
+			pMethod = messageParts[0];
+			pUser = messageParts[1];
+			pCoords = messageParts[2];
+			pData = messageParts[3];
+			
+			if(pMethod.equals("RSP")) {
+				// call callback method to trigger event for game update
+				String username = pUser;
+				int coorI = Integer.parseInt(pCoords.split(":")[0]);
+				int coorJ = Integer.parseInt(pCoords.split(":")[1]);
+				int status = Integer.parseInt(pCoords.split(":")[2]);
+				int nextIndex = Integer.parseInt(pData);
+				boolean myTurn = false;
+				currentIndex = nextIndex;
+				myTurn = (currentIndex == myIndex ? true : false);
+				// trigger event, pass it username, coords, status, turn
+				state  = BattleShipPeer.PLAYING;
+				return state;
 			}
 		}
 		
 		return 0;
+	}
+	
+	public String synMessage() {
+		state = BattleShipPeer.INIT;
+		return "SYN_"+parent.getMyUserName()+'\n';
+	}
+	
+	public String rndMessage() {
+		return "RND_"+parent.getMyUserName()+"_"+generateRndNumber()+'\n';
+	}
+	
+	public String shootMessage(String targetUserName, int coorI, int coorJ) {
+		state = BattleShipPeer.PLAYING;
+		return "SHT_"+targetUserName+"_"+coorI+":"+coorJ+'\n';
+	}
+	
+	// this method will be automatically called from facade after the event callback finishes 
+	public String responseMessage(int coorI, int coorJ, int status) {
+		return "RSP_"+parent.getMyUserName()+"_"+coorI+":"+coorJ+":"+status+"_"+nextIndex(status)+'\n';
+	}
+	
+	public String nextMessage() {
+		state = BattleShipPeer.DESTROYED;
+		return "NXT_"+parent.getMyUserName()+"_"+nextIndex(BattleShipStatus.SHIP_MISSED)+'\n';
+	}
+	
+	public String finishMessage() {
+		// delete this method
+		state = BattleShipPeer.BYE;
+		return "FIN"+'\n';
+	}
+	
+	public String byeMessage() {
+		state = BattleShipPeer.BYE;
+		return "BYE"+'\n';
+	}
+	
+	private boolean calculateIndexes() {
+		if(myIndex == peer1RndNubmer || myIndex == peer2RndNumber || peer1RndNubmer == peer2RndNumber) {
+			return false;
+		}
+		if(myIndex > peer1RndNubmer) {
+			if(myIndex > peer2RndNumber) {
+				myIndex = 1;
+			} else {
+				myIndex = 2;
+			}
+		} else {
+			if(myIndex > peer2RndNumber) {
+				myIndex = 2;
+			}
+			else {
+				myIndex = 3;
+			}
+		}
+		currentIndex = 1;
+		return true;
+	}
+	
+	private int nextIndex(int status) {
+		if(status == BattleShipStatus.SHIP_MISSED) {
+			if(myIndex == 3) {
+				currentIndex = 1;
+				return currentIndex;
+			} else {
+				currentIndex = myIndex + 1;
+				return currentIndex;
+			}
+		}
+		if(status == BattleShipStatus.FLEET_DESTROYED) {
+			fleetDestroyed = true;
+			this.state = BattleShipPeer.DESTROYED;
+		}
+		return currentIndex;
+	}
+	
+	private int generateRndNumber() {
+		Random rnd = new Random();
+		myRandomNumber = rnd.nextInt(100)+1; 
+		return myRandomNumber;
 	}
 }

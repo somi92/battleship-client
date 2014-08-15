@@ -13,9 +13,9 @@ import interfaces.ServerSideMediator;
 
 public class CommunicationController implements NetworkMediator, ClientMediator, ServerSideMediator {
 
-	private ServerSocket serverSideSocket;
-	private BufferedReader serverSideInputStream;
-	private DataOutputStream serverSideOutputStream;
+//	private ServerSocket serverSideSocket;
+//	private BufferedReader serverSideInputStream;
+//	private DataOutputStream serverSideOutputStream;
 	
 	private Socket clientSocket;
 	private BufferedReader clientInputStream;
@@ -53,9 +53,11 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 	public void initializePeersComunnication(String peer1Ip, int peer1Port,
 			String peer2Ip, int peer2Port) throws IOException{
 		// TODO Auto-generated method stub
+		
 		peer1Socket = new Socket(peer1Ip,peer1Port);
 		peer1InputStream= new BufferedReader(new InputStreamReader(peer1Socket.getInputStream()));
 		peer1OutputStream= new DataOutputStream(peer1Socket.getOutputStream());
+		
 		peer2Socket=new Socket(peer1Ip,peer1Port);
 		peer2InputStream= new BufferedReader(new InputStreamReader(peer2Socket.getInputStream()));
 		peer2OutputStream= new DataOutputStream(peer2Socket.getOutputStream());
@@ -80,7 +82,7 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 	@Override
 	public void connectToPeers(String message) {
 		// TODO Auto-generated method stub
-		
+		// method for sending first message RND and SYN
 	}
 
 	@Override
