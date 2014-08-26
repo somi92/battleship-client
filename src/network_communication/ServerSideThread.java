@@ -20,6 +20,8 @@ public class ServerSideThread implements Runnable {
 	private ServerSocket serverSide;
 	private ExecutorService serverSideExecutor;
 	
+//	private String mainServerIP;
+	
 	public ServerSideThread() {
 
 	}
@@ -29,10 +31,11 @@ public class ServerSideThread implements Runnable {
 		this.messageQueue = messageQueue;
 	}
 
-	public ServerSideThread(BlockingQueue<String> messageQueue, int listeningPort, String myUsername) {
+	public ServerSideThread(BlockingQueue<String> messageQueue, int listeningPort, String myUsername, String mainServerIP) {
 		this(messageQueue);
 		this.listeningPort = listeningPort;
 		this.myUsername = myUsername;
+//		this.mainServerIP = mainServerIP;
 	}
 	
 	private void setListeningPort(int listeningPort) {
@@ -50,6 +53,10 @@ public class ServerSideThread implements Runnable {
 	public String getMyUsername() {
 		return myUsername;
 	}
+	
+//	public void setMainServerIP(String mainServerIP) {
+//		this.mainServerIP = mainServerIP;
+//	}
 	
 	private void startServerListener(int listeningPort) {
 		try {

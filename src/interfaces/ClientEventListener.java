@@ -7,8 +7,8 @@ public interface ClientEventListener {
 	public void onWait(String message);
 	
 	// method fired when peer message is received from main server, implement start logic
-	public void onStart();
+	public void onStart(String message);
 	
 	// method fired when bye message is received
-	public void onBye();
+	public void onBye(String message);
 }

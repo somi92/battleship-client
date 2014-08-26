@@ -9,9 +9,11 @@ public class BattleShipPeer {
 	public static final int INIT = 0;
 	public static final int SYNCHRONIZED = 1;
 	public static final int PLAYING = 2;
-	public static final int DESTROYED = 3;
-	public static final int BYE = 4;
-	public static final int ERROR = 5;
+//	public static final int IDLE = 3;
+	public static final int ATTACKED = 4;
+	public static final int DESTROYED = 5;
+	public static final int BYE = 6;
+	public static final int ERROR = 7;
 	
 	private int state;
 	private int myIndex;
@@ -23,9 +25,6 @@ public class BattleShipPeer {
 	private int RNDcounter;
 	
 	private BattleShipProtocol parent;
-	
-//	private String usernamePeer1;
-//	private String usernamePeer2;
 	
 	private int myRandomNumber;
 	private int peer1RndNubmer;
@@ -73,6 +72,7 @@ public class BattleShipPeer {
 					parent.setPeer2UserName(messageParts[1]);
 //					usernamePeer2 = messageParts[1];
 					state = BattleShipPeer.SYNCHRONIZED;
+					parent.peerListener.onSynchronized();
 					return state;
 				}
 			}
@@ -106,14 +106,15 @@ public class BattleShipPeer {
 			}
 			
 			if(pMethod.equals("SHT")) {
-				// call callback method to trigger event and pass target username and coordinates, but only if i am being attacked
+				
 				String targetUsername = pUser;
 				if(targetUsername.equals(parent.getMyUserName())) {
-					state = BattleShipPeer.PLAYING;
+//					state = BattleShipPeer.PLAYING;
+					state = BattleShipPeer.ATTACKED;
 					String[] coors = pData.split(":");
 					int i = Integer.parseInt(coors[0]);
 					int j = Integer.parseInt(coors[1]);
-					// trigger event
+					parent.peerListener.onAttacked(i, j);
 					return state;
 				} else {
 					state = BattleShipPeer.PLAYING;
@@ -127,7 +128,7 @@ public class BattleShipPeer {
 				boolean myTurn = false;
 				currentIndex = nextIndex;
 				myTurn = (currentIndex == myIndex ? true : false);
-				// call callback (same as rsp but without coords and status, consider using overloading)
+				parent.peerListener.onNext(username, myTurn);
 				state = BattleShipPeer.PLAYING;
 				return state;
 			}
@@ -140,7 +141,6 @@ public class BattleShipPeer {
 			pData = messageParts[3];
 			
 			if(pMethod.equals("RSP")) {
-				// call callback method to trigger event for game update
 				String username = pUser;
 				int coorI = Integer.parseInt(pCoords.split(":")[0]);
 				int coorJ = Integer.parseInt(pCoords.split(":")[1]);
@@ -149,7 +149,7 @@ public class BattleShipPeer {
 				boolean myTurn = false;
 				currentIndex = nextIndex;
 				myTurn = (currentIndex == myIndex ? true : false);
-				// trigger event, pass it username, coords, status, turn
+				parent.peerListener.onAttackResponse(username, coorI, coorJ, status, myTurn);
 				state  = BattleShipPeer.PLAYING;
 				return state;
 			}
@@ -194,17 +194,17 @@ public class BattleShipPeer {
 	}
 	
 	private boolean calculateIndexes() {
-		if(myIndex == peer1RndNubmer || myIndex == peer2RndNumber || peer1RndNubmer == peer2RndNumber) {
+		if(myRandomNumber == peer1RndNubmer || myRandomNumber == peer2RndNumber || peer1RndNubmer == peer2RndNumber) {
 			return false;
 		}
-		if(myIndex > peer1RndNubmer) {
-			if(myIndex > peer2RndNumber) {
+		if(myRandomNumber > peer1RndNubmer) {
+			if(myRandomNumber > peer2RndNumber) {
 				myIndex = 1;
 			} else {
 				myIndex = 2;
 			}
 		} else {
-			if(myIndex > peer2RndNumber) {
+			if(myRandomNumber > peer2RndNumber) {
 				myIndex = 2;
 			}
 			else {
