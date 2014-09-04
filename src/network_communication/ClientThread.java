@@ -24,9 +24,12 @@ public class ClientThread implements Runnable {
 	
 	private String username;
 	
-	public ClientThread(ClientMediator mediator) {
+	public ClientThread(ClientMediator mediator, BlockingQueue<String> messageQueue, String mainServerIP, int mainServerPort) {
 		this.mediator = mediator;
+		this.messageQueue = messageQueue;
 		this.protocol = new BattleShipProtocol();
+		this.mainServerIP = mainServerIP;
+		this.mainServerPort = mainServerPort;
 		try {
 			this.mediator.initializeServerCommunication(mainServerIP, mainServerPort);
 		} catch (IOException e) {
@@ -71,6 +74,7 @@ public class ClientThread implements Runnable {
 					protocol.setMyIP(IP);
 					protocol.setMyPort(port);
 					protocol.setMyUserName(username);
+					System.out.println(IP+" "+port+" "+username);
 					connectToMainServer(IP, port);
 				} else {
 					// call method to parse and handle the message passed by server-side thread
@@ -78,15 +82,15 @@ public class ClientThread implements Runnable {
 					switch(handleMessage(message)) {
 					
 						case BattleShipPeer.SYNCHRONIZED:
-							
+							sendRnd();
 						break;
 						
 						case BattleShipPeer.PLAYING:
-							
+							// nothing
 						break;
 							
 						case BattleShipPeer.ATTACKED:
-							
+							sendRsp();
 						break;
 							
 						case BattleShipPeer.DESTROYED:
@@ -201,6 +205,19 @@ public class ClientThread implements Runnable {
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void sendRsp() {
+		String message = protocol.getRspMessage();
+		try {
+			boolean isOK = mediator.sendToPeers(message);
+			if(!isOK) {
+				
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 			e.printStackTrace();
 		}
 	}

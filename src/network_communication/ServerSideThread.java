@@ -31,11 +31,10 @@ public class ServerSideThread implements Runnable {
 		this.messageQueue = messageQueue;
 	}
 
-	public ServerSideThread(BlockingQueue<String> messageQueue, int listeningPort, String myUsername, String mainServerIP) {
+	public ServerSideThread(BlockingQueue<String> messageQueue, int listeningPort, String myUsername) {
 		this(messageQueue);
 		this.listeningPort = listeningPort;
 		this.myUsername = myUsername;
-//		this.mainServerIP = mainServerIP;
 	}
 	
 	private void setListeningPort(int listeningPort) {
@@ -83,7 +82,7 @@ public class ServerSideThread implements Runnable {
 		
 		// this thread needs to signal the client thread to start and pass it the listening port
 		try {
-			messageQueue.put("CONN "+serverSide.getInetAddress().toString()+":"+listeningPort+":"+myUsername+'\n');
+			messageQueue.put("CONN "+serverSide.getLocalSocketAddress().toString()+":"+listeningPort+":"+myUsername+'\n');
 			
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block

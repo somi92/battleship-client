@@ -30,6 +30,8 @@ public class BattleShipPeer {
 	private int peer1RndNubmer;
 	private int peer2RndNumber;
 	
+	private int coorIAttacked;
+	private int coorJAttacked;
 	
 	public BattleShipPeer() {
 		this.state = BattleShipPeer.INIT;
@@ -38,6 +40,8 @@ public class BattleShipPeer {
 		this.fleetDestroyed = false;
 		this.SYNcounter = 0;
 		this.RNDcounter = 0;
+		this.coorIAttacked = -1;
+		this.coorJAttacked = -1;
 	}
 	
 	public BattleShipPeer(BattleShipProtocol parent) {
@@ -114,7 +118,9 @@ public class BattleShipPeer {
 					String[] coors = pData.split(":");
 					int i = Integer.parseInt(coors[0]);
 					int j = Integer.parseInt(coors[1]);
-					parent.peerListener.onAttacked(i, j);
+					coorIAttacked = i;
+					coorJAttacked = j;
+					parent.status = parent.peerListener.onAttacked(i, j);
 					return state;
 				} else {
 					state = BattleShipPeer.PLAYING;
@@ -173,8 +179,13 @@ public class BattleShipPeer {
 	}
 	
 	// this method will be automatically called from facade after the event callback finishes 
-	public String responseMessage(int coorI, int coorJ, int status) {
-		return "RSP_"+parent.getMyUserName()+"_"+coorI+":"+coorJ+":"+status+"_"+nextIndex(status)+'\n';
+	
+//	public String responseMessage(int coorI, int coorJ, int status) {
+//		return "RSP_"+parent.getMyUserName()+"_"+coorI+":"+coorJ+":"+status+"_"+nextIndex(status)+'\n';
+//	}
+	
+	public String responseMessage(int status) {
+		return "RSP_"+parent.getMyUserName()+"_"+coorIAttacked+":"+coorJAttacked+":"+status+"_"+nextIndex(status)+'\n';
 	}
 	
 	public String nextMessage() {

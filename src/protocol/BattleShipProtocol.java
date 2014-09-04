@@ -1,5 +1,6 @@
 package protocol;
 
+import utilities.BattleShipStatus;
 import interfaces.ClientEventListener;
 import interfaces.PeerEventListener;
 
@@ -26,8 +27,11 @@ public class BattleShipProtocol {
 	private int peer2Port;
 	private String peer2UserName;
 	
+	int status;
+	
 	public BattleShipProtocol() {
-		
+		this.clientProtocol = new BattleShipClient(this);
+		this.peerProtocol = new BattleShipPeer(this);
 	}
 	
 	public String getMyIP() {
@@ -102,6 +106,10 @@ public class BattleShipProtocol {
 		this.peer2UserName = peer2UserName;
 	}
 
+	public int getStatus() {
+		return this.status;
+	}
+	
 	public void initializeProtocol() {
 		clientProtocol = new BattleShipClient(this);
 		peerProtocol = new BattleShipPeer();
@@ -159,8 +167,12 @@ public class BattleShipProtocol {
 		return peerProtocol.shootMessage(targetUserName, coorI, coorJ);
 	}
 	
-	public String getRspMessage(int coorI, int coorJ, int status) {
-		return peerProtocol.responseMessage(coorI, coorJ, status);
+//	public String getRspMessage(int coorI, int coorJ, int status) {
+//		return peerProtocol.responseMessage(coorI, coorJ, status);
+//	}
+	
+	public String getRspMessage() {
+		return peerProtocol.responseMessage(this.status);
 	}
 	
 	public String getNextMessage() {
