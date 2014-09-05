@@ -55,7 +55,7 @@ public class BattleShipProtocol {
 	}
 
 	public void setMyUserName(String myUserName) {
-		this.myUserName = myUserName;
+		this.myUserName = myUserName.trim();
 	}
 
 	public String getPeer1IP() {

@@ -3,6 +3,9 @@ package utilities;
 import interfaces.ClientEventListener;
 import interfaces.PeerEventListener;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -18,9 +21,20 @@ public class TestComm {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
+		String username = "";
+		System.out.print("Enter username: ");
+		BufferedReader in1 = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			username = in1.readLine();
+			in1.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		BlockingQueue<String> queue = new ArrayBlockingQueue<String>(10);
 		CommunicationController controller = new CommunicationController();
-		ServerSideThread server = new ServerSideThread(queue, 9898, "Somi");
+		ServerSideThread server = new ServerSideThread(queue, 0, username);
 		ClientThread client = new ClientThread(controller, queue, "localhost", 9080);
 		
 		client.setClientEventListener(new ClientEventListener() {
@@ -28,7 +42,7 @@ public class TestComm {
 			@Override
 			public void onWait(String message) {
 				// TODO Auto-generated method stub
-//				System.out.println("onWait");
+				System.out.println(message);
 			}
 			
 			@Override

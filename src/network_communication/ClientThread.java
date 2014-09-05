@@ -74,7 +74,7 @@ public class ClientThread implements Runnable {
 					protocol.setMyIP(IP);
 					protocol.setMyPort(port);
 					protocol.setMyUserName(username);
-					System.out.println(IP+" "+port+" "+username);
+					System.out.println(port+" "+username);
 					connectToMainServer(IP, port);
 				} else {
 					// call method to parse and handle the message passed by server-side thread
@@ -124,11 +124,12 @@ public class ClientThread implements Runnable {
 
 		boolean wait = true;
 		
-		protocol.setMyIP(IP);
-		protocol.setMyPort(listeningPort);
-		protocol.setMyUserName(username);
+//		protocol.setMyIP(IP);
+//		protocol.setMyPort(listeningPort);
+//		protocol.setMyUserName(username);
 		
 		String message = protocol.getMainServerConnectionMessage();
+		System.out.println(message);
 		
 		try {
 			
@@ -159,6 +160,8 @@ public class ClientThread implements Runnable {
 
 						String peer2Ip = protocol.getPeer2IP();
 						int peer2Port = protocol.getPeer2Port();
+						
+						System.out.println("Peers "+peer1Ip+peer1Port+" "+peer2Ip+peer2Port);
 						
 						mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port);
 						protocol.getClientEventListener().onStart("Povezivanje sa igracima...");

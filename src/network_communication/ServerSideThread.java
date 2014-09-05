@@ -82,7 +82,7 @@ public class ServerSideThread implements Runnable {
 		
 		// this thread needs to signal the client thread to start and pass it the listening port
 		try {
-			messageQueue.put("CONN "+serverSide.getLocalSocketAddress().toString()+":"+listeningPort+":"+myUsername+'\n');
+			messageQueue.put("CONN "+"localhost"+":"+listeningPort+":"+myUsername+'\n');
 			
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
