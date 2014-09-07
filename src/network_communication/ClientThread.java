@@ -85,6 +85,10 @@ public class ClientThread implements Runnable {
 							sendRnd();
 						break;
 						
+						case BattleShipPeer.IDLE:
+							
+						break;
+						
 						case BattleShipPeer.PLAYING:
 							// nothing
 						break;
@@ -170,7 +174,10 @@ public class ClientThread implements Runnable {
 						
 						if(!isOK) {
 							// error occured, handle here
+							System.out.println("ERROR!");
+							break;
 						}
+//						sendRnd();
 //					 	ovdje ce ici event listener za pocetak igre
 //						peersProtocol
 //						mediator.connectToPeers(params);

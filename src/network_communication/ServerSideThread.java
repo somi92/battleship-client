@@ -123,8 +123,10 @@ public class ServerSideThread implements Runnable {
 				
 				while(true) {
 					clientMessage = clientInput.readLine();
-					messageQueue.put(clientMessage);
-					clientOutput.writeBytes("OK"+'\n');
+					if(clientMessage != null) {
+						messageQueue.put(clientMessage);
+						clientOutput.writeBytes("OK"+'\n');
+					}
 				}
 			} catch (IOException e) {
 				// TODO: handle exception

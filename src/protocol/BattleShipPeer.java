@@ -9,7 +9,7 @@ public class BattleShipPeer {
 	public static final int INIT = 0;
 	public static final int SYNCHRONIZED = 1;
 	public static final int PLAYING = 2;
-//	public static final int IDLE = 3;
+	public static final int IDLE = 3;
 	public static final int ATTACKED = 4;
 	public static final int DESTROYED = 5;
 	public static final int BYE = 6;
@@ -96,12 +96,15 @@ public class BattleShipPeer {
 				RNDcounter++;
 				if(RNDcounter == 1) {
 					peer1RndNubmer = Integer.parseInt(pData);
+					state = BattleShipPeer.IDLE;
 					return state;
 				} else if(RNDcounter == 2) {
 					peer2RndNumber = Integer.parseInt(pData);
 					boolean rndStatus = calculateIndexes();
 					if(rndStatus) {
 						state = BattleShipPeer.PLAYING;
+						boolean myTurn = (myIndex == currentIndex ? true : false); 
+						parent.peerListener.onRnd(myTurn, myRandomNumber, myIndex);
 					} else {
 						state = BattleShipPeer.SYNCHRONIZED;
 					}

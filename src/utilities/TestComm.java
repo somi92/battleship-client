@@ -48,7 +48,7 @@ public class TestComm {
 			@Override
 			public void onStart(String message) {
 				// TODO Auto-generated method stub
-//				System.out.println("on);
+				System.out.println(message);
 			}
 			
 			@Override
@@ -63,6 +63,7 @@ public class TestComm {
 			@Override
 			public void onSynchronized() {
 				// TODO Auto-generated method stub
+				System.out.println("onSynchronized");
 				
 			}
 			
@@ -89,6 +90,13 @@ public class TestComm {
 					int status, boolean myTurn) {
 				// TODO Auto-generated method stub
 				
+			}
+
+			@Override
+			public void onRnd(boolean myTurn, int myRND, int myIndex) {
+				// TODO Auto-generated method stub
+				System.out.println("My turn: "+myTurn+" RND: "+myRND+" index: "+myIndex);
+
 			}
 		});
 		

@@ -58,7 +58,7 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 		peer1InputStream = new BufferedReader(new InputStreamReader(peer1Socket.getInputStream()));
 		peer1OutputStream = new DataOutputStream(peer1Socket.getOutputStream());
 		
-		peer2Socket = new Socket(peer1Ip,peer1Port);
+		peer2Socket = new Socket(peer2Ip,peer2Port);
 		peer2InputStream = new BufferedReader(new InputStreamReader(peer2Socket.getInputStream()));
 		peer2OutputStream = new DataOutputStream(peer2Socket.getOutputStream());
 		
@@ -82,9 +82,19 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 		String response1 = peer1InputStream.readLine();
 		String response2 = peer2InputStream.readLine();
 		
-		if(response1 == "OK" && response2 == "OK") {
+		if(response1.startsWith("OK") && response2.startsWith("OK")) {
 			return true;
 		} else {
+//			if(response1 == null) {
+				peer1InputStream.close();
+				peer1OutputStream.close();
+				peer1Socket.close();
+//			}
+			if(response2 == null) {
+				peer2InputStream.close();
+				peer2OutputStream.close();
+				peer2Socket.close();
+			}
 			return false;
 		}
 	}
