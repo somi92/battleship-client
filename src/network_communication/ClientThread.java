@@ -237,7 +237,7 @@ public class ClientThread implements Runnable {
 		try {
 			boolean isOK = mediator.sendToPeers(message);
 			if(!isOK) {
-				
+				System.out.println("Send not OK!");
 			}
 			
 		} catch (IOException e) {
