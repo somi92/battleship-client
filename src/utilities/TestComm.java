@@ -99,6 +99,7 @@ public class TestComm {
 				// TODO Auto-generated method stub
 				System.out.println("User: "+username+" "+coorI+":"+coorJ+" status: "+status+" myTurn: "+myTurn);
 				if(myTurn) {
+					
 					comm.shoot();
 				}
 			}
