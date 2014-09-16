@@ -50,19 +50,19 @@ public class TestComm {
 			@Override
 			public void onWait(String message) {
 				// TODO Auto-generated method stub
-				System.out.println(message);
+				System.out.println("onWait listener: "+message);
 			}
 			
 			@Override
 			public void onStart(String message) {
 				// TODO Auto-generated method stub
-				System.out.println(message);
+				System.out.println("onStart listener: "+message);
 			}
 			
 			@Override
 			public void onBye(String message) {
 				// TODO Auto-generated method stub
-				
+				System.out.println("onBye listener: "+message);
 			}
 		});
 		
@@ -71,14 +71,14 @@ public class TestComm {
 			@Override
 			public void onSynchronized() {
 				// TODO Auto-generated method stub
-				System.out.println("onSynchronized");
+				System.out.println("onSynchronized listener");
 				
 			}
 			
 			@Override
 			public void onNext(String username, boolean myTurn) {
 				// TODO Auto-generated method stub
-				
+				System.out.println("onNext listener");
 			}
 			
 			@Override
@@ -90,6 +90,7 @@ public class TestComm {
 			@Override
 			public int onAttacked(int coorI, int coorJ) {
 				// TODO Auto-generated method stub
+				System.out.println("onAttacked listener");
 				return comm.respond(coorI, coorJ);
 			}
 			
@@ -97,7 +98,7 @@ public class TestComm {
 			public void onAttackResponse(String username, int coorI, int coorJ,
 					int status, boolean myTurn) {
 				// TODO Auto-generated method stub
-				System.out.println("User: "+username+" "+coorI+":"+coorJ+" status: "+status+" myTurn: "+myTurn);
+				System.out.println("onAttackResponse listener - user: "+username+" "+coorI+":"+coorJ+" status: "+status+" myTurn: "+myTurn);
 				if(myTurn) {
 					
 					comm.shoot();
@@ -107,7 +108,7 @@ public class TestComm {
 			@Override
 			public void onRnd(boolean myTurn, int myRND, int myIndex) {
 				// TODO Auto-generated method stub
-				System.out.println("My turn: "+myTurn+" RND: "+myRND+" index: "+myIndex);
+				System.out.println("onRnd listener - my turn: "+myTurn+" RND: "+myRND+" index: "+myIndex);
 				if(myTurn) {
 					comm.shoot();
 				}

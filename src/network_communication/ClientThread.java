@@ -94,7 +94,14 @@ public class ClientThread implements Runnable {
 						break;
 							
 						case BattleShipPeer.ATTACKED:
-							sendRsp();
+							String rsp = sendRsp();
+							String[] parts = rsp.split("_");
+							String[] coords = parts[2].split(":");
+							int coorI = Integer.parseInt(coords[0]);
+							int coorJ = Integer.parseInt(coords[1]);
+							int status = Integer.parseInt(coords[2]);
+							boolean myTurn = (protocol.getCurrentIndex() == protocol.getMyIndex() ? true : false);
+							protocol.getPeerEventListener().onAttackResponse(protocol.getMyUserName(), coorI, coorJ, status, myTurn);
 						break;
 							
 						case BattleShipPeer.DESTROYED:
@@ -219,16 +226,18 @@ public class ClientThread implements Runnable {
 		}
 	}
 	
-	private void sendRsp() {
+	private String sendRsp() {
 		String message = protocol.getRspMessage();
 		try {
 			boolean isOK = mediator.sendToPeers(message);
 			if(!isOK) {
 				
 			}
+			return message;
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			return null;
 		}
 	}
 	

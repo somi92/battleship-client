@@ -49,6 +49,14 @@ public class BattleShipPeer {
 		this.parent = parent;
 	}
 	
+	int getMyIndex() {
+		return this.myIndex;
+	}
+	
+	int getCurrentIndex() {
+		return this.currentIndex;
+	}
+	
 	public int parseProtocolMessage(String message) {
 		
 		if(message == null) {
@@ -124,6 +132,9 @@ public class BattleShipPeer {
 					coorIAttacked = i;
 					coorJAttacked = j;
 					parent.status = parent.peerListener.onAttacked(i, j);
+//					boolean myTurn = false;
+//					myTurn = (currentIndex == myIndex ? true : false);
+//					parent.peerListener.onAttackResponse(targetUsername, coorIAttacked, coorJAttacked, parent.status, myTurn);
 					return state;
 				} else {
 					state = BattleShipPeer.PLAYING;
@@ -182,11 +193,6 @@ public class BattleShipPeer {
 	}
 	
 	// this method will be automatically called from facade after the event callback finishes 
-	
-//	public String responseMessage(int coorI, int coorJ, int status) {
-//		return "RSP_"+parent.getMyUserName()+"_"+coorI+":"+coorJ+":"+status+"_"+nextIndex(status)+'\n';
-//	}
-	
 	public String responseMessage(int status) {
 		return "RSP_"+parent.getMyUserName()+"_"+coorIAttacked+":"+coorJAttacked+":"+status+"_"+nextIndex(status)+'\n';
 	}
@@ -231,11 +237,11 @@ public class BattleShipPeer {
 	
 	private int nextIndex(int status) {
 		if(status == BattleShipStatus.SHIP_MISSED) {
-			if(myIndex == 3) {
+			if(currentIndex == 3) {
 				currentIndex = 1;
 				return currentIndex;
 			} else {
-				currentIndex = myIndex + 1;
+				currentIndex = currentIndex + 1;
 				return currentIndex;
 			}
 		}

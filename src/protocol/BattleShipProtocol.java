@@ -1,6 +1,5 @@
 package protocol;
 
-import utilities.BattleShipStatus;
 import interfaces.ClientEventListener;
 import interfaces.PeerEventListener;
 
@@ -28,6 +27,8 @@ public class BattleShipProtocol {
 	private String peer2UserName;
 	
 	int status;
+	int myIndex;
+	int currentIndex;
 	
 	public BattleShipProtocol() {
 		this.clientProtocol = new BattleShipClient(this);
@@ -108,6 +109,14 @@ public class BattleShipProtocol {
 
 	public int getStatus() {
 		return this.status;
+	}
+	
+	public int getMyIndex() {
+		return this.peerProtocol.getMyIndex();
+	}
+	
+	public int getCurrentIndex() {
+		return this.peerProtocol.getCurrentIndex();
 	}
 	
 	public void initializeProtocol() {
