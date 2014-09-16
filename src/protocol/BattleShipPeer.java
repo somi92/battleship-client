@@ -12,8 +12,9 @@ public class BattleShipPeer {
 	public static final int IDLE = 3;
 	public static final int ATTACKED = 4;
 	public static final int DESTROYED = 5;
-	public static final int BYE = 6;
-	public static final int ERROR = 7;
+	public static final int EXCLUDED = 6;
+	public static final int BYE = 7;
+	public static final int ERROR = 8;
 	
 	private int state;
 	private int myIndex;
@@ -124,7 +125,6 @@ public class BattleShipPeer {
 				
 				String targetUsername = pUser;
 				if(targetUsername.equals(parent.getMyUserName())) {
-//					state = BattleShipPeer.PLAYING;
 					state = BattleShipPeer.ATTACKED;
 					String[] coors = pData.split(":");
 					int i = Integer.parseInt(coors[0]);
@@ -132,9 +132,12 @@ public class BattleShipPeer {
 					coorIAttacked = i;
 					coorJAttacked = j;
 					parent.status = parent.peerListener.onAttacked(i, j);
-//					boolean myTurn = false;
-//					myTurn = (currentIndex == myIndex ? true : false);
-//					parent.peerListener.onAttackResponse(targetUsername, coorIAttacked, coorJAttacked, parent.status, myTurn);
+					
+					if(parent.status == BattleShipStatus.FLEET_DESTROYED) {
+						state = BattleShipPeer.DESTROYED;
+						fleetDestroyed = true;
+					}
+					
 					return state;
 				} else {
 					state = BattleShipPeer.PLAYING;
@@ -169,8 +172,21 @@ public class BattleShipPeer {
 				boolean myTurn = false;
 				currentIndex = nextIndex;
 				myTurn = (currentIndex == myIndex ? true : false);
+				if(fleetDestroyed && myTurn) {
+					myTurn = false;
+					state = BattleShipPeer.EXCLUDED;
+				} else {
+					state = BattleShipPeer.PLAYING;
+				}
 				parent.peerListener.onAttackResponse(username, coorI, coorJ, status, myTurn);
-				state  = BattleShipPeer.PLAYING;
+				
+//				if(fleetDestroyed == true && myTurn == true) {
+//					state = BattleShipPeer.EXCLUDED;
+//				} else {
+//					state  = BattleShipPeer.PLAYING;
+//				}
+				
+//				state  = BattleShipPeer.PLAYING;
 				return state;
 			}
 		}

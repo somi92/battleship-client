@@ -94,7 +94,7 @@ public class ClientThread implements Runnable {
 						break;
 							
 						case BattleShipPeer.ATTACKED:
-							String rsp = sendRsp();
+							String rsp = sendRSP();
 							String[] parts = rsp.split("_");
 							String[] coords = parts[2].split(":");
 							int coorI = Integer.parseInt(coords[0]);
@@ -105,7 +105,22 @@ public class ClientThread implements Runnable {
 						break;
 							
 						case BattleShipPeer.DESTROYED:
+							String rsp1 = sendRSP();
+							String[] parts1 = rsp1.split("_");
+							String[] coords1 = parts1[2].split(":");
+							int coorI1 = Integer.parseInt(coords1[0]);
+							int coorJ1 = Integer.parseInt(coords1[1]);
+							int status1 = Integer.parseInt(coords1[2]);
+							boolean myTurn1 = (protocol.getCurrentIndex() == protocol.getMyIndex() ? true : false);
+//							protocol.getPeerEventListener().onAttackResponse(protocol.getMyUserName(), coorI1, coorJ1, status1, myTurn1);
 							
+							if(myTurn1) {
+								sendNXT();
+							}
+						break;
+						
+						case BattleShipPeer.EXCLUDED:
+							sendNXT();
 						break;
 						
 						case BattleShipPeer.BYE:
@@ -120,7 +135,7 @@ public class ClientThread implements Runnable {
 					// if response SYNCHRONIZED send RND
 					// if response PLAYING do nothing
 					// if response ATTACKED send RSP
-					// if response DESTROYED send
+					// if response DESTROYED
 				}
 			}
 		} catch (Exception e) {
@@ -226,7 +241,7 @@ public class ClientThread implements Runnable {
 		}
 	}
 	
-	private String sendRsp() {
+	private String sendRSP() {
 		String message = protocol.getRspMessage();
 		try {
 			boolean isOK = mediator.sendToPeers(message);
@@ -255,6 +270,21 @@ public class ClientThread implements Runnable {
 		}
 	}
 
+	private void sendNXT() {
+		String message = protocol.getNextMessage();
+		System.out.println(message);
+		try {
+			boolean isOK = mediator.sendToPeers(message);
+			if(!isOK) {
+				System.out.println("Next not OK!");
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	// listener setters
 	public void setClientEventListener(ClientEventListener listener) {
 		protocol.setClientListener(listener);

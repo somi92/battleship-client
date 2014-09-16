@@ -78,7 +78,10 @@ public class TestComm {
 			@Override
 			public void onNext(String username, boolean myTurn) {
 				// TODO Auto-generated method stub
-				System.out.println("onNext listener");
+				System.out.println("onNext listener - sent by "+username+" myTurn: "+myTurn);
+				if(myTurn) {
+					comm.shoot();
+				}
 			}
 			
 			@Override
@@ -125,15 +128,13 @@ public class TestComm {
 	}
 
 	public void shoot() {
-		System.out.println('\n');
 		try {
-			System.out.println("Enter target username,coorI,coorJ: ");
+			System.out.print("Enter target username,coorI,coorJ: ");
 			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 			String target = in.readLine();
 			String[] params = target.split(",");
 			System.out.println(params[0]+" "+Integer.parseInt(params[1])+" "+Integer.parseInt(params[2]));
 			client.sendSHT(params[0], Integer.parseInt(params[1]), Integer.parseInt(params[2]));
-			System.out.println();
 //			in.close();
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -142,11 +143,11 @@ public class TestComm {
 	}
 	
 	public int respond(int coorI, int coorJ) {
-		System.out.println("\nSHIP_MISSED = 0");
+		System.out.println("SHIP_MISSED = 0");
 		System.out.println("SHIP_HIT = 1");
 		System.out.println("SHIP_SUNKED = 2");
 		System.out.println("FLEET_DESTROYED = 3");
-		System.out.println("Enter response: ");
+		System.out.print("Enter response: ");
 		Scanner s = new Scanner(System.in);
 		int response = s.nextInt();
 //		s.close();
