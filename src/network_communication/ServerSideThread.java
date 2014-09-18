@@ -20,6 +20,8 @@ public class ServerSideThread implements Runnable {
 	private ServerSocket serverSide;
 	private ExecutorService serverSideExecutor;
 	
+//	private String mainServerIP;
+	
 	public ServerSideThread() {
 
 	}
@@ -51,6 +53,10 @@ public class ServerSideThread implements Runnable {
 		return myUsername;
 	}
 	
+//	public void setMainServerIP(String mainServerIP) {
+//		this.mainServerIP = mainServerIP;
+//	}
+	
 	private void startServerListener(int listeningPort) {
 		try {
 			serverSide = new ServerSocket(listeningPort);
@@ -76,7 +82,7 @@ public class ServerSideThread implements Runnable {
 		
 		// this thread needs to signal the client thread to start and pass it the listening port
 		try {
-			messageQueue.put("CONN "+serverSide.getInetAddress().toString()+":"+listeningPort+":"+myUsername+'\n');
+			messageQueue.put("CONN "+"localhost"+":"+listeningPort+":"+myUsername+'\n');
 			
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
@@ -117,8 +123,10 @@ public class ServerSideThread implements Runnable {
 				
 				while(true) {
 					clientMessage = clientInput.readLine();
-					messageQueue.put(clientMessage);
-					clientOutput.writeBytes("OK"+'\n');
+					if(clientMessage != null) {
+						messageQueue.put(clientMessage);
+						clientOutput.writeBytes("OK"+'\n');
+					}
 				}
 			} catch (IOException e) {
 				// TODO: handle exception

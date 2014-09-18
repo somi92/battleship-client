@@ -3,7 +3,10 @@ package network_communication;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
+import javax.swing.JOptionPane;
+
 import protocol.BattleShipClient;
+import protocol.BattleShipPeer;
 import protocol.BattleShipProtocol;
 
 import interfaces.ClientEventListener;
@@ -21,9 +24,12 @@ public class ClientThread implements Runnable {
 	
 	private String username;
 	
-	public ClientThread(ClientMediator mediator) {
+	public ClientThread(ClientMediator mediator, BlockingQueue<String> messageQueue, String mainServerIP, int mainServerPort) {
 		this.mediator = mediator;
+		this.messageQueue = messageQueue;
 		this.protocol = new BattleShipProtocol();
+		this.mainServerIP = mainServerIP;
+		this.mainServerPort = mainServerPort;
 		try {
 			this.mediator.initializeServerCommunication(mainServerIP, mainServerPort);
 		} catch (IOException e) {
@@ -55,11 +61,11 @@ public class ClientThread implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		String messsage;
+		String message;
 		try {
-			while((messsage = messageQueue.take()) != null) {
-				if(messsage.startsWith("CONN")) {
-					String[] parts = messsage.split(" ");
+			while((message = messageQueue.take()) != null) {
+				if(message.startsWith("CONN")) {
+					String[] parts = message.split(" ");
 					String[] ipAndPort = parts[1].split(":");
 					String IP = ipAndPort[0];
 					int port = Integer.parseInt(ipAndPort[1]);
@@ -68,73 +74,218 @@ public class ClientThread implements Runnable {
 					protocol.setMyIP(IP);
 					protocol.setMyPort(port);
 					protocol.setMyUserName(username);
+					System.out.println(port+" "+username);
 					connectToMainServer(IP, port);
 				} else {
+					// call method to parse and handle the message passed by server-side thread
 					
+					switch(handleMessage(message)) {
+					
+						case BattleShipPeer.SYNCHRONIZED:
+							sendRnd();
+						break;
+						
+						case BattleShipPeer.IDLE:
+							
+						break;
+						
+						case BattleShipPeer.PLAYING:
+							// nothing
+						break;
+							
+						case BattleShipPeer.ATTACKED:
+							String rsp = sendRSP();
+							String[] parts = rsp.split("_");
+							String[] coords = parts[2].split(":");
+							int coorI = Integer.parseInt(coords[0]);
+							int coorJ = Integer.parseInt(coords[1]);
+							int status = Integer.parseInt(coords[2]);
+							boolean myTurn = (protocol.getCurrentIndex() == protocol.getMyIndex() ? true : false);
+							protocol.getPeerEventListener().onAttackResponse(protocol.getMyUserName(), coorI, coorJ, status, myTurn);
+						break;
+							
+						case BattleShipPeer.DESTROYED:
+							String rsp1 = sendRSP();
+							String[] parts1 = rsp1.split("_");
+							String[] coords1 = parts1[2].split(":");
+							int coorI1 = Integer.parseInt(coords1[0]);
+							int coorJ1 = Integer.parseInt(coords1[1]);
+							int status1 = Integer.parseInt(coords1[2]);
+							boolean myTurn1 = (protocol.getCurrentIndex() == protocol.getMyIndex() ? true : false);
+//							protocol.getPeerEventListener().onAttackResponse(protocol.getMyUserName(), coorI1, coorJ1, status1, myTurn1);
+							
+							if(myTurn1) {
+								sendNXT();
+							}
+						break;
+						
+						case BattleShipPeer.EXCLUDED:
+							sendNXT();
+						break;
+						
+						case BattleShipPeer.BYE:
+							
+						break;
+						
+						case BattleShipPeer.ERROR:
+							
+						break;
+					}
+					
+					// if response SYNCHRONIZED send RND
+					// if response PLAYING do nothing
+					// if response ATTACKED send RSP
+					// if response DESTROYED
 				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 	
 	public void connectToMainServer(String IP, int listeningPort) {
 		// TODO Auto-generated method stub
 
-		protocol.setMyIP(IP);
-		protocol.setMyPort(listeningPort);
-		protocol.setMyUserName(username);
+		boolean wait = true;
+		
+//		protocol.setMyIP(IP);
+//		protocol.setMyPort(listeningPort);
+//		protocol.setMyUserName(username);
 		
 		String message = protocol.getMainServerConnectionMessage();
+		System.out.println(message);
 		
 		try {
 			
 			String response = mediator.sendToMainServer(message);
 
 			int responseCode = protocol.parseMainServerMessage(response);
-		
-			switch (responseCode){
+			
+			while(wait) {
+				
+				wait = false;
 
-				case BattleShipClient.WAIT: { 
-					//obavesti klijenta da se cekaju igraci za igru, event listener
-					protocol.getClientEventListener().onWait("Server je prihvatio zahtev. Cekaju se igraci...");
-				}
-				break;
-				
-				case BattleShipClient.START: { 
-					
-					String peer1Ip = protocol.getPeer1IP();
-					int peer1Port = protocol.getPeer1Port();
-					
+				switch (responseCode){
 
-					String peer2Ip = protocol.getPeer2IP();
-					int peer2Port = protocol.getPeer2Port();
+					case BattleShipClient.WAIT: { 
+						//obavesti klijenta da se cekaju igraci za igru, event listener
+						protocol.getClientEventListener().onWait("Server je prihvatio zahtev. Cekaju se igraci...");
+						
+						response = mediator.receive();
+						responseCode = protocol.parseMainServerMessage(response);
+						
+						wait = true;
+					}
+					break;
 					
-					mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port);
+					case BattleShipClient.START: { 
+						
+						String peer1Ip = protocol.getPeer1IP();
+						int peer1Port = protocol.getPeer1Port();
+
+						String peer2Ip = protocol.getPeer2IP();
+						int peer2Port = protocol.getPeer2Port();
+						
+						System.out.println("Peers "+peer1Ip+peer1Port+" "+peer2Ip+peer2Port);
+						
+						mediator.initializePeersComunnication(peer1Ip, peer1Port, peer2Ip, peer2Port);
+						protocol.getClientEventListener().onStart("Povezivanje sa igracima...");
+						
+						boolean isOK  = mediator.sendToPeers(protocol.getSynMessage());
+						
+						if(!isOK) {
+							// error occured, handle here
+							System.out.println("ERROR!");
+							break;
+						}
+//						sendRnd();
+//					 	ovdje ce ici event listener za pocetak igre
+//						peersProtocol
+//						mediator.connectToPeers(params);
+					}
+					break;
 					
-//				 	ovdje ce ici event listener za pocetak igre
-//					peersProtocol
-//					mediator.connectToPeers(params);
-				}
-				break;
-				
-				case BattleShipClient.BYE: {
+					case BattleShipClient.BYE: {
+						// call methods to close resources in mediator and trigger event in protocol
+					}
+					break;
 					
+					case BattleShipClient.ERROR: { 
+						// call methods to close resources in mediator and trigger event in protocol
+					}
+					break;
+			
 				}
-				break;
 				
-				case BattleShipClient.ERROR: { 
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	// methods for sending messages
+	
+	private void sendRnd() {
+		String message = protocol.getRndMessage();
+		try {
+			boolean isOK = mediator.sendToPeers(message);
+			if(!isOK) {
 				
-				}
-				break;
-		
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+	private String sendRSP() {
+		String message = protocol.getRspMessage();
+		try {
+			boolean isOK = mediator.sendToPeers(message);
+			if(!isOK) {
+				
+			}
+			return message;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public void sendSHT(String targetUserName, int coorI, int coorJ) {
+		String message = protocol.getShtMessage(targetUserName, coorI, coorJ);
+		try {
+			boolean isOK = mediator.sendToPeers(message);
+			if(!isOK) {
+				System.out.println("Send not OK!");
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
+	private void sendNXT() {
+		String message = protocol.getNextMessage();
+		System.out.println(message);
+		try {
+			boolean isOK = mediator.sendToPeers(message);
+			if(!isOK) {
+				System.out.println("Next not OK!");
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	// listener setters
 	public void setClientEventListener(ClientEventListener listener) {
 		protocol.setClientListener(listener);
@@ -142,5 +293,10 @@ public class ClientThread implements Runnable {
 	
 	public void setPeerEventListener(PeerEventListener listener) {
 		protocol.setPeerListener(listener);
+	}
+	
+	private int handleMessage(String message) {
+		int response  = protocol.parsePeerMessage(message);
+		return response;
 	}
 }

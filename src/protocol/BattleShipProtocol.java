@@ -26,8 +26,13 @@ public class BattleShipProtocol {
 	private int peer2Port;
 	private String peer2UserName;
 	
+	int status;
+	int myIndex;
+	int currentIndex;
+	
 	public BattleShipProtocol() {
-		
+		this.clientProtocol = new BattleShipClient(this);
+		this.peerProtocol = new BattleShipPeer(this);
 	}
 	
 	public String getMyIP() {
@@ -51,7 +56,7 @@ public class BattleShipProtocol {
 	}
 
 	public void setMyUserName(String myUserName) {
-		this.myUserName = myUserName;
+		this.myUserName = myUserName.trim();
 	}
 
 	public String getPeer1IP() {
@@ -102,6 +107,18 @@ public class BattleShipProtocol {
 		this.peer2UserName = peer2UserName;
 	}
 
+	public int getStatus() {
+		return this.status;
+	}
+	
+	public int getMyIndex() {
+		return this.peerProtocol.getMyIndex();
+	}
+	
+	public int getCurrentIndex() {
+		return this.peerProtocol.getCurrentIndex();
+	}
+	
 	public void initializeProtocol() {
 		clientProtocol = new BattleShipClient(this);
 		peerProtocol = new BattleShipPeer();
@@ -159,8 +176,12 @@ public class BattleShipProtocol {
 		return peerProtocol.shootMessage(targetUserName, coorI, coorJ);
 	}
 	
-	public String getRspMessage(int coorI, int coorJ, int status) {
-		return peerProtocol.responseMessage(coorI, coorJ, status);
+//	public String getRspMessage(int coorI, int coorJ, int status) {
+//		return peerProtocol.responseMessage(coorI, coorJ, status);
+//	}
+	
+	public String getRspMessage() {
+		return peerProtocol.responseMessage(this.status);
 	}
 	
 	public String getNextMessage() {

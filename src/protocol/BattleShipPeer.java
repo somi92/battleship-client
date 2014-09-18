@@ -9,9 +9,12 @@ public class BattleShipPeer {
 	public static final int INIT = 0;
 	public static final int SYNCHRONIZED = 1;
 	public static final int PLAYING = 2;
-	public static final int DESTROYED = 3;
-	public static final int BYE = 4;
-	public static final int ERROR = 5;
+	public static final int IDLE = 3;
+	public static final int ATTACKED = 4;
+	public static final int DESTROYED = 5;
+	public static final int EXCLUDED = 6;
+	public static final int BYE = 7;
+	public static final int ERROR = 8;
 	
 	private int state;
 	private int myIndex;
@@ -24,13 +27,12 @@ public class BattleShipPeer {
 	
 	private BattleShipProtocol parent;
 	
-//	private String usernamePeer1;
-//	private String usernamePeer2;
-	
 	private int myRandomNumber;
 	private int peer1RndNubmer;
 	private int peer2RndNumber;
 	
+	private int coorIAttacked;
+	private int coorJAttacked;
 	
 	public BattleShipPeer() {
 		this.state = BattleShipPeer.INIT;
@@ -39,11 +41,21 @@ public class BattleShipPeer {
 		this.fleetDestroyed = false;
 		this.SYNcounter = 0;
 		this.RNDcounter = 0;
+		this.coorIAttacked = -1;
+		this.coorJAttacked = -1;
 	}
 	
 	public BattleShipPeer(BattleShipProtocol parent) {
 		this();
 		this.parent = parent;
+	}
+	
+	int getMyIndex() {
+		return this.myIndex;
+	}
+	
+	int getCurrentIndex() {
+		return this.currentIndex;
 	}
 	
 	public int parseProtocolMessage(String message) {
@@ -73,6 +85,7 @@ public class BattleShipPeer {
 					parent.setPeer2UserName(messageParts[1]);
 //					usernamePeer2 = messageParts[1];
 					state = BattleShipPeer.SYNCHRONIZED;
+					parent.peerListener.onSynchronized();
 					return state;
 				}
 			}
@@ -92,12 +105,15 @@ public class BattleShipPeer {
 				RNDcounter++;
 				if(RNDcounter == 1) {
 					peer1RndNubmer = Integer.parseInt(pData);
+					state = BattleShipPeer.IDLE;
 					return state;
 				} else if(RNDcounter == 2) {
 					peer2RndNumber = Integer.parseInt(pData);
 					boolean rndStatus = calculateIndexes();
 					if(rndStatus) {
 						state = BattleShipPeer.PLAYING;
+						boolean myTurn = (myIndex == currentIndex ? true : false); 
+						parent.peerListener.onRnd(myTurn, myRandomNumber, myIndex);
 					} else {
 						state = BattleShipPeer.SYNCHRONIZED;
 					}
@@ -106,14 +122,22 @@ public class BattleShipPeer {
 			}
 			
 			if(pMethod.equals("SHT")) {
-				// call callback method to trigger event and pass target username and coordinates, but only if i am being attacked
+				
 				String targetUsername = pUser;
 				if(targetUsername.equals(parent.getMyUserName())) {
-					state = BattleShipPeer.PLAYING;
+					state = BattleShipPeer.ATTACKED;
 					String[] coors = pData.split(":");
 					int i = Integer.parseInt(coors[0]);
 					int j = Integer.parseInt(coors[1]);
-					// trigger event
+					coorIAttacked = i;
+					coorJAttacked = j;
+					parent.status = parent.peerListener.onAttacked(i, j);
+					
+					if(parent.status == BattleShipStatus.FLEET_DESTROYED) {
+						state = BattleShipPeer.DESTROYED;
+						fleetDestroyed = true;
+					}
+					
 					return state;
 				} else {
 					state = BattleShipPeer.PLAYING;
@@ -127,7 +151,7 @@ public class BattleShipPeer {
 				boolean myTurn = false;
 				currentIndex = nextIndex;
 				myTurn = (currentIndex == myIndex ? true : false);
-				// call callback (same as rsp but without coords and status, consider using overloading)
+				parent.peerListener.onNext(username, myTurn);
 				state = BattleShipPeer.PLAYING;
 				return state;
 			}
@@ -140,7 +164,6 @@ public class BattleShipPeer {
 			pData = messageParts[3];
 			
 			if(pMethod.equals("RSP")) {
-				// call callback method to trigger event for game update
 				String username = pUser;
 				int coorI = Integer.parseInt(pCoords.split(":")[0]);
 				int coorJ = Integer.parseInt(pCoords.split(":")[1]);
@@ -149,8 +172,21 @@ public class BattleShipPeer {
 				boolean myTurn = false;
 				currentIndex = nextIndex;
 				myTurn = (currentIndex == myIndex ? true : false);
-				// trigger event, pass it username, coords, status, turn
-				state  = BattleShipPeer.PLAYING;
+				if(fleetDestroyed && myTurn) {
+					myTurn = false;
+					state = BattleShipPeer.EXCLUDED;
+				} else {
+					state = BattleShipPeer.PLAYING;
+				}
+				parent.peerListener.onAttackResponse(username, coorI, coorJ, status, myTurn);
+				
+//				if(fleetDestroyed == true && myTurn == true) {
+//					state = BattleShipPeer.EXCLUDED;
+//				} else {
+//					state  = BattleShipPeer.PLAYING;
+//				}
+				
+//				state  = BattleShipPeer.PLAYING;
 				return state;
 			}
 		}
@@ -173,8 +209,8 @@ public class BattleShipPeer {
 	}
 	
 	// this method will be automatically called from facade after the event callback finishes 
-	public String responseMessage(int coorI, int coorJ, int status) {
-		return "RSP_"+parent.getMyUserName()+"_"+coorI+":"+coorJ+":"+status+"_"+nextIndex(status)+'\n';
+	public String responseMessage(int status) {
+		return "RSP_"+parent.getMyUserName()+"_"+coorIAttacked+":"+coorJAttacked+":"+status+"_"+nextIndex(status)+'\n';
 	}
 	
 	public String nextMessage() {
@@ -194,17 +230,17 @@ public class BattleShipPeer {
 	}
 	
 	private boolean calculateIndexes() {
-		if(myIndex == peer1RndNubmer || myIndex == peer2RndNumber || peer1RndNubmer == peer2RndNumber) {
+		if(myRandomNumber == peer1RndNubmer || myRandomNumber == peer2RndNumber || peer1RndNubmer == peer2RndNumber) {
 			return false;
 		}
-		if(myIndex > peer1RndNubmer) {
-			if(myIndex > peer2RndNumber) {
+		if(myRandomNumber > peer1RndNubmer) {
+			if(myRandomNumber > peer2RndNumber) {
 				myIndex = 1;
 			} else {
 				myIndex = 2;
 			}
 		} else {
-			if(myIndex > peer2RndNumber) {
+			if(myRandomNumber > peer2RndNumber) {
 				myIndex = 2;
 			}
 			else {
@@ -217,11 +253,11 @@ public class BattleShipPeer {
 	
 	private int nextIndex(int status) {
 		if(status == BattleShipStatus.SHIP_MISSED) {
-			if(myIndex == 3) {
+			if(currentIndex == 3) {
 				currentIndex = 1;
 				return currentIndex;
 			} else {
-				currentIndex = myIndex + 1;
+				currentIndex = currentIndex + 1;
 				return currentIndex;
 			}
 		}

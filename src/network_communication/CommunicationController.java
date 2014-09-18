@@ -30,15 +30,15 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 	private DataOutputStream peer2OutputStream;
 	
 	@Override
-	public void send(String message) {
+	public void send(String message) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void receive(String message) {
+	public String receive() throws IOException {
 		// TODO Auto-generated method stub
-		
+		return clientInputStream.readLine();
 	}
 	
 	@Override
@@ -55,12 +55,12 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 		// TODO Auto-generated method stub
 		
 		peer1Socket = new Socket(peer1Ip,peer1Port);
-		peer1InputStream= new BufferedReader(new InputStreamReader(peer1Socket.getInputStream()));
-		peer1OutputStream= new DataOutputStream(peer1Socket.getOutputStream());
+		peer1InputStream = new BufferedReader(new InputStreamReader(peer1Socket.getInputStream()));
+		peer1OutputStream = new DataOutputStream(peer1Socket.getOutputStream());
 		
-		peer2Socket=new Socket(peer1Ip,peer1Port);
-		peer2InputStream= new BufferedReader(new InputStreamReader(peer2Socket.getInputStream()));
-		peer2OutputStream= new DataOutputStream(peer2Socket.getOutputStream());
+		peer2Socket = new Socket(peer2Ip,peer2Port);
+		peer2InputStream = new BufferedReader(new InputStreamReader(peer2Socket.getInputStream()));
+		peer2OutputStream = new DataOutputStream(peer2Socket.getOutputStream());
 		
 	}
 	
@@ -74,15 +74,36 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 	}
 
 	@Override
-	public void sendToPeers(String message) {
+	public boolean sendToPeers(String message) throws IOException {
 		// TODO Auto-generated method stub
+		peer1OutputStream.writeBytes(message);
+		peer2OutputStream.writeBytes(message);
 		
+		String response1 = peer1InputStream.readLine();
+		String response2 = peer2InputStream.readLine();
+		
+		if(response1.startsWith("OK") && response2.startsWith("OK")) {
+			return true;
+		} else {
+//			if(response1 == null) {
+				peer1InputStream.close();
+				peer1OutputStream.close();
+				peer1Socket.close();
+//			}
+			if(response2 == null) {
+				peer2InputStream.close();
+				peer2OutputStream.close();
+				peer2Socket.close();
+			}
+			return false;
+		}
 	}
 
 	@Override
-	public void connectToPeers(String message) {
+	public boolean connectToPeers(String message) throws IOException {
 		// TODO Auto-generated method stub
 		// method for sending first message RND and SYN
+		return false;
 	}
 
 	@Override
