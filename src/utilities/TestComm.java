@@ -93,7 +93,7 @@ public class TestComm {
 			@Override
 			public int onAttacked(int coorI, int coorJ) {
 				// TODO Auto-generated method stub
-				System.out.println("onAttacked listener");
+				System.out.println("onAttacked listener: I: "+coorI+" J: "+coorJ);
 				return comm.respond(coorI, coorJ);
 			}
 			
