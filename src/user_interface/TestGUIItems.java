@@ -7,6 +7,9 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+
+import application_logic.SeaFieldManager;
+
 import java.awt.Dimension;
 
 public class TestGUIItems {
@@ -48,7 +51,7 @@ public class TestGUIItems {
 	 */
 	private void initialize() {
 		
-		seaField = new SeaField();
+		seaField = new SeaFieldManager().createSeaField();
 		seaField.setPreferredSize(new Dimension(250, 250));
 		seaField.setLayout(new BorderLayout(0, 0));
 		

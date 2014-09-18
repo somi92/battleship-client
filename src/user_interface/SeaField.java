@@ -1,5 +1,6 @@
 package user_interface;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -7,11 +8,13 @@ import java.awt.BorderLayout;
 /**
  * 
  * SeaField that extends JPanel represents game board made of 100 JButtons.
- * @author Stefan
+ * Ready to be added on content pane.
  *
  */
 public class SeaField extends JPanel {
 
+	public ImageIcon seaImg = new ImageIcon(getClass().getResource("/resources/sea.png"));
+	
 	private JButton[][] seaFieldMatrix;
 	
 	public SeaField() {
@@ -36,8 +39,9 @@ public class SeaField extends JPanel {
 
 				for(int row=0; row<10; row++)
 					for(int col=0; col<10; col++){				
-						cellName = "cell"+row+col;
-						JButton btn = new JButton(cellName);
+						cellName = ""+row+col;
+						
+						JButton btn = new JButton(seaImg);
 						btn.setName(cellName);
 						btn.setBorder(null);
 						btn.setBounds(((col*25)+10),((row*25)+25), 25, 25);

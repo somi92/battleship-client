@@ -15,34 +15,34 @@ public class SetMyShipsManager {
 	public SetMyShipsFrame workingFrame;
 	public JButton[][] myButtonGameBoard = new JButton[10][10];
 	
-	public ImageIcon seaImg;
-	public ImageIcon shipImage;
+	public ImageIcon seaImg = new ImageIcon(getClass().getResource("/resources/sea.png"));
+	public ImageIcon shipImage = new ImageIcon(getClass().getResource("/resources/brodic.jpg"));
 	public ImageIcon xImg;
+	
+	
+	
 	
 	//mouse enter / exit coordinates
 	public int iEnter;
 	public int jEnter;
+	public int jSuggested;
+	public int iSuggested;	
 //	public int iExit = -1;
 //	public int jExit = -1;
 
-	
-	
 	public String [] suggestedButtonsNames = null;
-	public LinkedList<String> existingBoats=new LinkedList<String>();
+	public LinkedList<String> existingBoats = new LinkedList<String>();
 
-MyGameBoardMask gb1= new MyGameBoardMask();
-public int iSuggested;
-public int jSuggested;
-
+	MyGameBoardMask gameBoardMask = new MyGameBoardMask();
 
 	public SetMyShipsManager(SetMyShipsFrame workingFrame) {
 	this.workingFrame = workingFrame;
 }
-
-	public JButton[][] generateGameBoard(){
-		
-		seaImg = new ImageIcon(getClass().getResource("/resources/sea.png"));
-		shipImage = new ImageIcon(getClass().getResource("/resources/brodic.jpg"));
+/**
+ * Pravi 2D niz dugmdi kojima su postavljeni eventListeneri. Niz je spreman da se postavi na potrebni panel.
+ * @return
+ */
+	public JButton[][] initializeButtonsforGameBoard(){
 		
 		for(int i=0;i<10;i++){
 			for (int j=0;j<10;j++){
@@ -55,7 +55,7 @@ public int jSuggested;
 				JButton btn = myButtonGameBoard[i][j];
 				
 				enterActionListener(btn); //done
-				clickActionListener(btn);
+				clickActionListener(btn); //done
 				exitActionListener(btn);  //done
 				setToolTipEffect(btn);  // done
 			}
@@ -120,31 +120,34 @@ public int jSuggested;
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				for(int i=0;i<suggestedButtonsNames.length;i++){
+				for(int i=0;i<suggestedButtonsNames.length;i++)
 					if(existingBoats.contains(suggestedButtonsNames[i])){
+						//Neki od predlozenih polja za brod je na mestu gde vec postoji brod.
+						System.out.println("Ne mozes postaviti brod na to polje!");
 						return;
 					}
 				
-				}
-				int tipBroda=workingFrame.updateLabels();
-				if((tipBroda)>0){
+				int sifraBroda = workingFrame.updateLabels();
+				
+				if((sifraBroda)!=0){
 					
-					
-				for(int i=0;i<10;i++)
-					for(int j=0;j<10;j++){
-						if(myButtonGameBoard[i][j].isBorderPainted())
-						{
-							existingBoats.add(myButtonGameBoard[i][j].getName());
-							myButtonGameBoard[i][j].setIcon(shipImage);
-							gb1.FillStartMatrix(i,j,tipBroda);
+					for(int i=0;i<10;i++)
+						for(int j=0;j<10;j++){
+							//samo polja koja treba da dobiju sliku broda imju border ofarban
+							if(myButtonGameBoard[i][j].isBorderPainted()){
+								existingBoats.add(myButtonGameBoard[i][j].getName());
+								myButtonGameBoard[i][j].setIcon(shipImage);
+								gameBoardMask.FillStartMatrix(i,j,sifraBroda);
+							}
 						}
-					}
-				for(int i=0;i<existingBoats.size();i++){
-					System.out.print(" "+existingBoats.get(i));
+//Provera
+					//System.out.print("Kordinate postojecih brodica:");
+					//for(int i=0;i<existingBoats.size();i++)
+					//	System.out.print(" "+existingBoats.get(i));
+					//System.out.println();
 				}
 				
-			}
-				gb1.ispisi();}
+				gameBoardMask.ispisi();}
 		});
 	}
 		
@@ -166,7 +169,7 @@ public int jSuggested;
 	}
 
 /**
- * inicijalizuje niz odredjene duzine u zavisnosti od velicine brodica
+ * inicijalizuje niz odredjene duzine u zavisnosti od velicine brodica i
  * popunjava kordinatama dugmadi koja treba da se markiraju
  * @param horOrVer 
  * @param size
@@ -252,6 +255,7 @@ public int jSuggested;
 		// ako ne postoji uneta velicina broda
 		return null;
 		}//kraj if
+		
 		else{ //ako je vertikalno
 			switch(size){
 				case 1:{			

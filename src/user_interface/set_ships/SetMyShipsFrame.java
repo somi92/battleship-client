@@ -31,6 +31,11 @@ import javax.swing.event.ChangeEvent;
 
 public class SetMyShipsFrame extends JFrame {
 
+	public SetMyShipsFrame me = this;
+	SetMyShipsManager myShipsManager = new SetMyShipsManager(me);
+	
+	JButton[][] buttonGameBoard = myShipsManager.initializeButtonsforGameBoard();
+
 	private JPanel contentPane;
 	private JPanel centerPanel;
 	private JPanel upPanel;
@@ -41,8 +46,9 @@ public class SetMyShipsFrame extends JFrame {
 	private JPanel leftPanel;
 	public ButtonGroup groupShips;
 	public ButtonGroup groupHV;
-	public int shipSize=1;
-	public char orijentation='H';
+	
+	public int shipSize = 1;
+	public char orijentation = 'H';
 	
 
 	/**
@@ -86,11 +92,6 @@ public class SetMyShipsFrame extends JFrame {
 		groupHV.add(rdbtnVertical);
 	}
 
-	public SetMyShipsFrame me= this;
-	
-	SetMyShipsManager shipManager = new SetMyShipsManager(me);
-	
-	JButton[][] buttonGameBoard = shipManager.generateGameBoard();
 	
 	private JRadioButton rdbtnHorisontal;
 	private JRadioButton rdbtnVertical;
@@ -269,62 +270,59 @@ public class SetMyShipsFrame extends JFrame {
 		if(rdbtnVertical.isSelected()) orijentation='V';
 		
 	}
+	
+/**
+ * Metoda proveri koji radioButton je selektovan (velicina broda) i vodi racuna o boriju postavljenih brodova.
+ * Koristi je setMyShipsManager
+ * @return int index - sifru broda 
+ */
 	public int updateLabels(){
-		int indeks=0;
-		JRadioButton randomJB=null;
-		int moreShips=0;
-		JLabel randomL=null;
-		
-		
+		int indeks = 0;
+		JRadioButton randomJB = null;
+		int moreShips = 0;
+		JLabel randomL = null;
 		
 		if(rdbtnOneCellShips.isSelected()){
 			indeks=1;
 			randomJB=rdbtnOneCellShips;
-			randomL=lblOneCellsShip;;
-			moreShips=Integer.parseInt(randomL.getText());
+			randomL=lblOneCellsShip;
 		}
 		
 		if(rdbtnTwoCellShips.isSelected()){
 			indeks=2;
 			randomJB=rdbtnTwoCellShips;
 			randomL=lblTwoCellsShip;;
-			moreShips=Integer.parseInt(randomL.getText());
 		}
 		
 		if(rdbtnThreeCellsShips.isSelected()){
-			
 			randomJB=rdbtnThreeCellsShips;
 			randomL=lblThreeCellsShip;
-			if(randomL.getText().equals("2"))
-				indeks=3;
-			else
-				indeks=4;//kada se drugi put bira brod tipa 3 celije
-			moreShips=Integer.parseInt(randomL.getText());
+
+			if(randomL.getText().equals("2")) indeks=3;
+			else indeks=4;//kada se drugi put bira brod tipa 3 celije
+
 		}
-		
 		
 		if(rdbtnFiveCellShips.isSelected()){
 			indeks=5;
 			randomJB=rdbtnFiveCellShips;
 			randomL=lblFrourCellsShip;
-			moreShips=Integer.parseInt(randomL.getText());
 		}
 		
-		if(moreShips>0){
+		moreShips=Integer.parseInt(randomL.getText());
+		
+		if(moreShips > 0){
 			moreShips--;
 			randomL.setText(""+moreShips);
 			if(moreShips==0){
 				randomJB.setEnabled(false);
 				randomJB.setSelected(false);
 				}
-			
 			return indeks;
-		}
-		else{
+		}else{
 			randomJB.setSelected(false);
 			randomJB.setEnabled(false);
 			return -1;}
-		
 	}	
 }
 
