@@ -1,12 +1,14 @@
 package application_logic;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import user_interface.SeaField;
+import user_interface.SeaFieldPanel;
 
 /**
  * klasa koja upravlja poljima na glavnom GUI-u
@@ -18,12 +20,13 @@ import user_interface.SeaField;
  *
  */
 public class SeaFieldManager {
-
-
 	
-	
-	public SeaField createSeaField(){
-		return new SeaField();
+	public SeaFieldPanel createSeaField(){
+		SeaFieldPanel seaFieldPanel = new SeaFieldPanel();
+//		seaField.setPreferredSize(new Dimension(250, 250));
+		seaFieldPanel.setLayout(new BorderLayout(0, 0));
+		
+		return seaFieldPanel;
 	}
 	
 /**

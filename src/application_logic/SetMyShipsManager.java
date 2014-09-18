@@ -8,7 +8,8 @@ import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import user_interface.set_ships.SetMyShipsFrame;
+
+import user_interface.SetMyShipsFrame;
 
 public class SetMyShipsManager {
 
