@@ -43,7 +43,7 @@ public class TestComm {
 		comm.queue = new ArrayBlockingQueue<String>(10);
 		comm.controller = new CommunicationController();
 		comm.server = new ServerSideThread(comm.queue, 0, username);
-		comm.client = new ClientThread(comm.controller, comm.queue, "localhost", 9080);
+		comm.client = new ClientThread(comm.controller, comm.queue, "192.168.1.10", 9080);
 		
 		comm.client.setClientEventListener(new ClientEventListener() {
 			
@@ -109,12 +109,16 @@ public class TestComm {
 			}
 
 			@Override
-			public void onRnd(boolean myTurn, int myRND, int myIndex) {
+			public void onRnd(boolean myTurn, int myRND, int myIndex,
+					String peer1Username, int peer1Index, String peer2Username,
+					int peer2Index) {
 				// TODO Auto-generated method stub
-				System.out.println("onRnd listener - my turn: "+myTurn+" RND: "+myRND+" index: "+myIndex);
+				System.out.println("onRnd listener - my turn: "+myTurn+" RND: "+myRND+" index: "+myIndex+
+						" user-index: "+peer1Username+"-"+peer1Index+" "+peer2Username+"-"+peer2Index);
 				if(myTurn) {
 					comm.shoot();
 				}
+				
 			}
 		});
 		

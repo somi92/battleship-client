@@ -18,6 +18,8 @@ public class BattleShipPeer {
 	
 	private int state;
 	private int myIndex;
+	private int peer1Index;
+	private int peer2Index;
 	private int currentIndex;
 	
 	private boolean fleetDestroyed;
@@ -28,7 +30,7 @@ public class BattleShipPeer {
 	private BattleShipProtocol parent;
 	
 	private int myRandomNumber;
-	private int peer1RndNubmer;
+	private int peer1RndNumber;
 	private int peer2RndNumber;
 	
 	private int coorIAttacked;
@@ -37,6 +39,8 @@ public class BattleShipPeer {
 	public BattleShipPeer() {
 		this.state = BattleShipPeer.INIT;
 		this.myIndex = 0;
+		this.peer1Index = 0;
+		this.peer2Index = 0;
 		this.currentIndex = 0;
 		this.fleetDestroyed = false;
 		this.SYNcounter = 0;
@@ -79,11 +83,9 @@ public class BattleShipPeer {
 				SYNcounter++;
 				if(SYNcounter == 1) {
 					parent.setPeer1UserName(messageParts[1]);
-//					usernamePeer1 = messageParts[1];
 					return state;
 				} else if(SYNcounter == 2) {
 					parent.setPeer2UserName(messageParts[1]);
-//					usernamePeer2 = messageParts[1];
 					state = BattleShipPeer.SYNCHRONIZED;
 					parent.peerListener.onSynchronized();
 					return state;
@@ -104,16 +106,32 @@ public class BattleShipPeer {
 			if(pMethod.equals("RND")) {
 				RNDcounter++;
 				if(RNDcounter == 1) {
-					peer1RndNubmer = Integer.parseInt(pData);
+					
+					if(parent.getPeer1UserName().equals(pUser)) {
+						peer1RndNumber = Integer.parseInt(pData);
+					}
+					if(parent.getPeer2UserName().equals(pUser)) {
+						peer2RndNumber = Integer.parseInt(pData);
+					}
+						
 					state = BattleShipPeer.IDLE;
 					return state;
 				} else if(RNDcounter == 2) {
-					peer2RndNumber = Integer.parseInt(pData);
+					
+					if(parent.getPeer1UserName().equals(pUser)) {
+						peer1RndNumber = Integer.parseInt(pData);
+					}
+					if(parent.getPeer2UserName().equals(pUser)) {
+						peer2RndNumber = Integer.parseInt(pData);
+					}
+						
+					
+//					peer2RndNumber = Integer.parseInt(pData);
 					boolean rndStatus = calculateIndexes();
 					if(rndStatus) {
 						state = BattleShipPeer.PLAYING;
 						boolean myTurn = (myIndex == currentIndex ? true : false); 
-						parent.peerListener.onRnd(myTurn, myRandomNumber, myIndex);
+						parent.peerListener.onRnd(myTurn, myRandomNumber, myIndex, parent.getPeer1UserName(), peer1Index, parent.getPeer2UserName(), peer2Index);
 					} else {
 						state = BattleShipPeer.SYNCHRONIZED;
 					}
@@ -230,21 +248,46 @@ public class BattleShipPeer {
 	}
 	
 	private boolean calculateIndexes() {
-		if(myRandomNumber == peer1RndNubmer || myRandomNumber == peer2RndNumber || peer1RndNubmer == peer2RndNumber) {
+		if(myRandomNumber == peer1RndNumber || myRandomNumber == peer2RndNumber || peer1RndNumber == peer2RndNumber) {
 			return false;
 		}
-		if(myRandomNumber > peer1RndNubmer) {
+		if(myRandomNumber > peer1RndNumber) {
 			if(myRandomNumber > peer2RndNumber) {
+				
 				myIndex = 1;
+				if(peer1RndNumber>peer2RndNumber) {
+					peer1Index = 2;
+					peer2Index = 3;
+				} else {
+					peer2Index = 2;
+					peer1Index = 3;
+				}
+				
 			} else {
+				
+				peer2Index = 1;
 				myIndex = 2;
+				peer1Index = 3;
+				
 			}
 		} else {
+			
 			if(myRandomNumber > peer2RndNumber) {
+				
+				peer1Index = 1;
 				myIndex = 2;
-			}
-			else {
+				peer2Index = 3;
+				
+			} else {
+				
 				myIndex = 3;
+				if(peer1RndNumber>peer2RndNumber) {
+					peer1Index = 1;
+					peer2Index = 2;
+				} else {
+					peer2Index = 1;
+					peer1Index = 2;
+				}
 			}
 		}
 		currentIndex = 1;

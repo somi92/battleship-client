@@ -253,7 +253,7 @@ public class ClientThread implements Runnable {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			return null;
+			return message;
 		}
 	}
 	
