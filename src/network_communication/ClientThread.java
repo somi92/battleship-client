@@ -231,58 +231,35 @@ public class ClientThread implements Runnable {
 	
 	private void sendRnd() {
 		String message = protocol.getRndMessage();
-		try {
-			boolean isOK = mediator.sendToPeers(message);
-			if(!isOK) {
+		boolean isOK = mediator.sendToPeers(message);
+		if(!isOK) {
 				
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	
 	private String sendRSP() {
 		String message = protocol.getRspMessage();
-		try {
-			boolean isOK = mediator.sendToPeers(message);
-			if(!isOK) {
+		boolean isOK = mediator.sendToPeers(message);
+		if(!isOK) {
 				
-			}
-			return message;
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			return message;
 		}
+		return message;
 	}
 	
 	public void sendSHT(String targetUserName, int coorI, int coorJ) {
 		String message = protocol.getShtMessage(targetUserName, coorI, coorJ);
-		try {
-			boolean isOK = mediator.sendToPeers(message);
-			if(!isOK) {
-				System.out.println("Send not OK!");
-			}
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		boolean isOK = mediator.sendToPeers(message);
+		if(!isOK) {
+			System.out.println("Send not OK!");
 		}
 	}
 
 	private void sendNXT() {
 		String message = protocol.getNextMessage();
 		System.out.println(message);
-		try {
-			boolean isOK = mediator.sendToPeers(message);
-			if(!isOK) {
-				System.out.println("Next not OK!");
-			}
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		boolean isOK = mediator.sendToPeers(message);
+		if(!isOK) {
+			System.out.println("Next not OK!");
 		}
 	}
 	

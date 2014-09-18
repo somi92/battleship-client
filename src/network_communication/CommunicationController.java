@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.swing.JOptionPane;
+
 import interfaces.ClientMediator;
 import interfaces.NetworkMediator;
 import interfaces.ServerSideMediator;
@@ -74,27 +76,58 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 	}
 
 	@Override
-	public boolean sendToPeers(String message) throws IOException {
+	public boolean sendToPeers(String message) {
 		// TODO Auto-generated method stub
-		peer1OutputStream.writeBytes(message);
-		peer2OutputStream.writeBytes(message);
 		
-		String response1 = peer1InputStream.readLine();
-		String response2 = peer2InputStream.readLine();
+		try {
+			peer1OutputStream.writeBytes(message);
+		} catch (IOException e) {
+			// TODO: handle exception
+			JOptionPane.showMessageDialog(null, "Could not send to peer1, disconnected!");
+			e.printStackTrace();
+		}
 		
-		if(response1.startsWith("OK") && response2.startsWith("OK")) {
+		try {
+			peer2OutputStream.writeBytes(message);
+		} catch (IOException e) {
+			// TODO: handle exception
+			JOptionPane.showMessageDialog(null, "Could not send to peer2, disconnected!");
+			e.printStackTrace();
+		}
+		
+		
+		String response1 = "";
+		try {
+			response1 = peer1InputStream.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Could not receive from peer1, disconnected!");
+			e.printStackTrace();
+		}
+		
+		String response2 = "";
+		try {
+			response2 = peer2InputStream.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Could not receive from peer2, disconnected!");
+			e.printStackTrace();
+		}
+		
+		if(response1 != null && response1.startsWith("OK") && response2 != null && response2.startsWith("OK")) {
 			return true;
 		} else {
 //			if(response1 == null) {
-				peer1InputStream.close();
-				peer1OutputStream.close();
-				peer1Socket.close();
+//				peer1InputStream.close();
+//				peer1OutputStream.close();
+//				peer1Socket.close();
 //			}
-			if(response2 == null) {
-				peer2InputStream.close();
-				peer2OutputStream.close();
-				peer2Socket.close();
-			}
+//			if(response2 == null) {
+//				peer2InputStream.close();
+//				peer2OutputStream.close();
+//				peer2Socket.close();
+//			}
+			JOptionPane.showMessageDialog(null, "Not OK received!");
 			return false;
 		}
 	}
