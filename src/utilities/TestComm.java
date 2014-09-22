@@ -43,7 +43,7 @@ public class TestComm {
 		comm.queue = new ArrayBlockingQueue<String>(10);
 		comm.controller = new CommunicationController();
 		comm.server = new ServerSideThread(comm.queue, 0, username);
-		comm.client = new ClientThread(comm.controller, comm.queue, "192.168.1.10", 9080);
+		comm.client = new ClientThread(comm.controller, comm.queue, "localhost", 9080);
 		
 		comm.client.setClientEventListener(new ClientEventListener() {
 			

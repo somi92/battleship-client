@@ -116,6 +116,7 @@ public class BattleShipPeer {
 						
 					state = BattleShipPeer.IDLE;
 					return state;
+					
 				} else if(RNDcounter == 2) {
 					
 					if(parent.getPeer1UserName().equals(pUser)) {
@@ -125,8 +126,6 @@ public class BattleShipPeer {
 						peer2RndNumber = Integer.parseInt(pData);
 					}
 						
-					
-//					peer2RndNumber = Integer.parseInt(pData);
 					boolean rndStatus = calculateIndexes();
 					if(rndStatus) {
 						state = BattleShipPeer.PLAYING;

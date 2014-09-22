@@ -14,10 +14,6 @@ import interfaces.NetworkMediator;
 import interfaces.ServerSideMediator;
 
 public class CommunicationController implements NetworkMediator, ClientMediator, ServerSideMediator {
-
-//	private ServerSocket serverSideSocket;
-//	private BufferedReader serverSideInputStream;
-//	private DataOutputStream serverSideOutputStream;
 	
 	private Socket clientSocket;
 	private BufferedReader clientInputStream;
@@ -53,7 +49,7 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 
 	@Override
 	public void initializePeersComunnication(String peer1Ip, int peer1Port,
-			String peer2Ip, int peer2Port) throws IOException{
+			String peer2Ip, int peer2Port) throws IOException {
 		// TODO Auto-generated method stub
 		
 		peer1Socket = new Socket(peer1Ip,peer1Port);
@@ -95,7 +91,6 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 			e.printStackTrace();
 		}
 		
-		
 		String response1 = "";
 		try {
 			response1 = peer1InputStream.readLine();
@@ -127,7 +122,7 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 //				peer2OutputStream.close();
 //				peer2Socket.close();
 //			}
-			JOptionPane.showMessageDialog(null, "Not OK received!");
+//			JOptionPane.showMessageDialog(null, "Not OK received!");
 			return false;
 		}
 	}

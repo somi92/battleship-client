@@ -3,8 +3,6 @@ package network_communication;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
-import javax.swing.JOptionPane;
-
 import protocol.BattleShipClient;
 import protocol.BattleShipPeer;
 import protocol.BattleShipProtocol;
@@ -22,7 +20,7 @@ public class ClientThread implements Runnable {
 	private String mainServerIP;
 	private int mainServerPort;
 	
-	private String username;
+//	private String username;
 	
 	public ClientThread(ClientMediator mediator, BlockingQueue<String> messageQueue, String mainServerIP, int mainServerPort) {
 		this.mediator = mediator;
@@ -54,9 +52,9 @@ public class ClientThread implements Runnable {
 		this.mainServerPort = mainServerPort;
 	}
 	
-	public void setUserName(String username) {
-		this.username = username;
-	}
+//	public void setUserName(String username) {
+//		this.username = username;
+//	}
 
 	@Override
 	public void run() {
@@ -105,12 +103,13 @@ public class ClientThread implements Runnable {
 						break;
 							
 						case BattleShipPeer.DESTROYED:
-							String rsp1 = sendRSP();
-							String[] parts1 = rsp1.split("_");
-							String[] coords1 = parts1[2].split(":");
-							int coorI1 = Integer.parseInt(coords1[0]);
-							int coorJ1 = Integer.parseInt(coords1[1]);
-							int status1 = Integer.parseInt(coords1[2]);
+							sendRSP();
+//							String rsp1 = sendRSP();
+//							String[] parts1 = rsp1.split("_");
+//							String[] coords1 = parts1[2].split(":");
+//							int coorI1 = Integer.parseInt(coords1[0]);
+//							int coorJ1 = Integer.parseInt(coords1[1]);
+//							int status1 = Integer.parseInt(coords1[2]);
 							boolean myTurn1 = (protocol.getCurrentIndex() == protocol.getMyIndex() ? true : false);
 //							protocol.getPeerEventListener().onAttackResponse(protocol.getMyUserName(), coorI1, coorJ1, status1, myTurn1);
 							
