@@ -15,6 +15,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JButton;
 
 import application_logic.SeaFieldManager;
+import main.Main;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import java.awt.GridLayout;
@@ -22,7 +23,7 @@ import javax.swing.SwingConstants;
 import java.awt.Component;
 
 public class MainGUI extends JFrame {
-
+	public Main main = null;
 	
 	SeaFieldManager seaFieldManager = null;
 	JPanel seaFieldMy = null;
@@ -48,34 +49,28 @@ public class MainGUI extends JFrame {
 	private JLabel labelMe;
 	private JLabel labelOpponent2;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainGUI frame = new MainGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	/**
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					MainGUI frame = new MainGUI();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
-	public MainGUI(){
-		
-		initialize();
-		
-	}
-	
-	
 	
 	/**
 	 * Create the frame.
 	 */
-	public void initialize() {
+	public MainGUI(Main main) {
+		this.main = main; 
 		
 		seaFieldManager = new SeaFieldManager();
 		seaFieldMy = seaFieldManager.createSeaField();

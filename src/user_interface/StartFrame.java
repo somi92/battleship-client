@@ -14,6 +14,8 @@ import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import main.Main;
 import net.miginfocom.swing.MigLayout;
 import java.awt.Component;
 import javax.swing.JTextField;
@@ -21,6 +23,8 @@ import java.awt.Font;
 
 public class StartFrame extends JFrame {
 
+	Main main = null;
+	
 	public ImageIcon cover = new ImageIcon(getClass().getResource("/resources/cover.jpg"));
 	
 	private JPanel contentPane;
@@ -33,26 +37,28 @@ public class StartFrame extends JFrame {
 	private JButton btnGameRules_1;
 	private JLabel lblPotapanjeBrodova;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					StartFrame frame = new StartFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	/**
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					StartFrame frame = new StartFrame();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
 	 */
-	public StartFrame() {
+	public StartFrame(Main main) {
+		this.main = main;
+		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 513, 427);
@@ -112,6 +118,10 @@ public class StartFrame extends JFrame {
 			btnNewButton = new JButton("START");
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+									
+						main.setMyShipsFrame.setVisible(true);
+						setVisible(false);
+					 									
 				}
 			});
 			btnNewButton.setBounds(33, 90, 118, 23);
