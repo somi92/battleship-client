@@ -30,7 +30,7 @@ public class SeaFieldManager {
 	}
 	
 /**
- * metoda postavlja action listenere na polja na
+ * metoda postavlja action listenere na polja na u
  *  glavnom gui-u.
  * @param btn
  * @param isMyGameBoard true ako je akcija za moju tablu, false ako postavljam za protivnikove table

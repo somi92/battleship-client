@@ -38,7 +38,7 @@ public class MainGUI extends JFrame {
 	private JPanel centralPanel;
 	private JPanel downPanel;
 	private JScrollPane scrollPane;
-	private JTextPane textPane;
+	public JTextPane textPane;
 	private JPanel panel;
 	private JButton btnNewButton;
 	private JButton btnNewButton_1;
@@ -121,6 +121,7 @@ public class MainGUI extends JFrame {
 	private JTextPane getTextPane() {
 		if (textPane == null) {
 			textPane = new JTextPane();
+			textPane.setEnabled(false);
 		}
 		return textPane;
 	}
