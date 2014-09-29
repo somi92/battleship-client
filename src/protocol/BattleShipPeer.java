@@ -116,6 +116,7 @@ public class BattleShipPeer {
 						
 					state = BattleShipPeer.IDLE;
 					return state;
+					
 				} else if(RNDcounter == 2) {
 					
 					if(parent.getPeer1UserName().equals(pUser)) {
@@ -125,8 +126,6 @@ public class BattleShipPeer {
 						peer2RndNumber = Integer.parseInt(pData);
 					}
 						
-					
-//					peer2RndNumber = Integer.parseInt(pData);
 					boolean rndStatus = calculateIndexes();
 					if(rndStatus) {
 						state = BattleShipPeer.PLAYING;
@@ -228,12 +227,17 @@ public class BattleShipPeer {
 	
 	// this method will be automatically called from facade after the event callback finishes 
 	public String responseMessage(int status) {
+		System.out.println("Current index is: "+currentIndex);
 		return "RSP_"+parent.getMyUserName()+"_"+coorIAttacked+":"+coorJAttacked+":"+status+"_"+nextIndex(status)+'\n';
 	}
 	
 	public String nextMessage() {
 		state = BattleShipPeer.DESTROYED;
 		return "NXT_"+parent.getMyUserName()+"_"+nextIndex(BattleShipStatus.SHIP_MISSED)+'\n';
+	}
+	
+	public String nextMessage(int index) {
+		return "NXT_"+parent.getMyUserName()+"_"+index+'\n';
 	}
 	
 	public String finishMessage() {

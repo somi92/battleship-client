@@ -119,6 +119,10 @@ public class BattleShipProtocol {
 		return this.peerProtocol.getCurrentIndex();
 	}
 	
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
+	}
+	
 	public void initializeProtocol() {
 		clientProtocol = new BattleShipClient(this);
 		peerProtocol = new BattleShipPeer();
@@ -186,6 +190,10 @@ public class BattleShipProtocol {
 	
 	public String getNextMessage() {
 		return peerProtocol.nextMessage();
+	}
+	
+	public String getNextMessage(int index) {
+		return peerProtocol.nextMessage(index);
 	}
 	
 	public String getByeMessage() {

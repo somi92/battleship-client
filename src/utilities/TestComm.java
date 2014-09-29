@@ -2,6 +2,7 @@ package utilities;
 
 import interfaces.ClientEventListener;
 import interfaces.PeerEventListener;
+import interfaces.TimerTimeout;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +21,12 @@ public class TestComm {
 	CommunicationController controller;
 	ServerSideThread server;
 	ClientThread client;
+	
+
+	
+	public TestComm() {
+		
+	}
 	
 	/**
 	 * @param args
@@ -43,7 +50,7 @@ public class TestComm {
 		comm.queue = new ArrayBlockingQueue<String>(10);
 		comm.controller = new CommunicationController();
 		comm.server = new ServerSideThread(comm.queue, 0, username);
-		comm.client = new ClientThread(comm.controller, comm.queue, "192.168.1.10", 9080);
+		comm.client = new ClientThread(comm.controller, comm.queue, "localhost", 9080);
 		
 		comm.client.setClientEventListener(new ClientEventListener() {
 			
@@ -133,12 +140,13 @@ public class TestComm {
 
 	public void shoot() {
 		try {
+			boolean isOK = false;
 			System.out.print("Enter target username,coorI,coorJ: ");
 			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 			String target = in.readLine();
 			String[] params = target.split(",");
 			System.out.println(params[0]+" "+Integer.parseInt(params[1])+" "+Integer.parseInt(params[2]));
-			client.sendSHT(params[0], Integer.parseInt(params[1]), Integer.parseInt(params[2]));
+			isOK = client.sendSHT(params[0], Integer.parseInt(params[1]), Integer.parseInt(params[2]));
 //			in.close();
 		} catch (Exception e) {
 			// TODO: handle exception
