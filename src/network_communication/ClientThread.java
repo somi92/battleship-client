@@ -20,6 +20,8 @@ public class ClientThread implements Runnable {
 	private String mainServerIP;
 	private int mainServerPort;
 	
+	private boolean error;
+	
 //	private String username;
 	
 	public ClientThread(ClientMediator mediator, BlockingQueue<String> messageQueue, String mainServerIP, int mainServerPort) {
@@ -28,6 +30,7 @@ public class ClientThread implements Runnable {
 		this.protocol = new BattleShipProtocol();
 		this.mainServerIP = mainServerIP;
 		this.mainServerPort = mainServerPort;
+		this.error = false;
 		try {
 			this.mediator.initializeServerCommunication(mainServerIP, mainServerPort);
 		} catch (IOException e) {
@@ -80,6 +83,8 @@ public class ClientThread implements Runnable {
 					switch(handleMessage(message)) {
 					
 						case BattleShipPeer.SYNCHRONIZED:
+							mediator.setPeer1Username(protocol.getPeer1UserName());
+							mediator.setPeer2Username(protocol.getPeer2UserName());
 							sendRnd();
 						break;
 						
@@ -92,6 +97,7 @@ public class ClientThread implements Runnable {
 						break;
 							
 						case BattleShipPeer.ATTACKED:
+							int attackerIndex = protocol.getCurrentIndex();
 							String rsp = sendRSP();
 							String[] parts = rsp.split("_");
 							String[] coords = parts[2].split(":");
@@ -99,6 +105,13 @@ public class ClientThread implements Runnable {
 							int coorJ = Integer.parseInt(coords[1]);
 							int status = Integer.parseInt(coords[2]);
 							boolean myTurn = (protocol.getCurrentIndex() == protocol.getMyIndex() ? true : false);
+							System.out.println("ERROR: "+error);
+							if(error && (attackerIndex != protocol.getCurrentIndex()) && !myTurn ) {
+								sendNXT(protocol.getMyIndex());
+								myTurn = true;
+								protocol.setCurrentIndex(protocol.getMyIndex());
+							}
+							System.out.println("Current index after RSP call: "+protocol.getCurrentIndex());
 							protocol.getPeerEventListener().onAttackResponse(protocol.getMyUserName(), coorI, coorJ, status, myTurn);
 						break;
 							
@@ -240,21 +253,34 @@ public class ClientThread implements Runnable {
 		String message = protocol.getRspMessage();
 		boolean isOK = mediator.sendToPeers(message);
 		if(!isOK) {
-				
+//			if(error = false) {
+				error = true;
+//			}
 		}
 		return message;
 	}
 	
-	public void sendSHT(String targetUserName, int coorI, int coorJ) {
+	public boolean sendSHT(String targetUserName, int coorI, int coorJ) {
 		String message = protocol.getShtMessage(targetUserName, coorI, coorJ);
 		boolean isOK = mediator.sendToPeers(message);
 		if(!isOK) {
 			System.out.println("Send not OK!");
+			return false;
 		}
+		return true;
 	}
 
 	private void sendNXT() {
 		String message = protocol.getNextMessage();
+		System.out.println(message);
+		boolean isOK = mediator.sendToPeers(message);
+		if(!isOK) {
+			System.out.println("Next not OK!");
+		}
+	}
+	
+	private void sendNXT(int index) {
+		String message = protocol.getNextMessage(index);
 		System.out.println(message);
 		boolean isOK = mediator.sendToPeers(message);
 		if(!isOK) {
