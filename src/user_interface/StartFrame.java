@@ -1,10 +1,5 @@
 package user_interface;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.Label;
-
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -16,13 +11,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import main.Main;
-import net.miginfocom.swing.MigLayout;
+
 import java.awt.Component;
 import javax.swing.JTextField;
 import java.awt.Font;
 
 public class StartFrame extends JFrame {
-
 	Main main = null;
 	
 	public ImageIcon cover = new ImageIcon(getClass().getResource("/resources/cover.jpg"));

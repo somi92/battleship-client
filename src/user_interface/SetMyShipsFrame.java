@@ -2,26 +2,19 @@ package user_interface;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
 import main.Main;
 import net.miginfocom.swing.MigLayout;
-
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Dimension;
 import javax.swing.SwingConstants;
-import java.awt.Insets;
-import javax.swing.JCheckBox;
+
 
 import application_logic.SetMyShipsManager;
 
@@ -55,21 +48,21 @@ public class SetMyShipsFrame extends JFrame {
 	public char orijentation = 'H';
 	
 
-//	/**
-//	 * Launch the application.
-//	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					SetMyShipsFrame frame = new SetMyShipsFrame();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					SetMyShipsFrame frame = new SetMyShipsFrame(null);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
 	/**
 	 * Create the frame.
@@ -269,6 +262,9 @@ public class SetMyShipsFrame extends JFrame {
 		return lblFrourCellsShip;
 	}
 	
+	/**
+	 * metoda postavlja vrednost int shipSize u zavisnosti koji RadioButton je checked.
+	 */
 	public void refreshShipSize(){
 		
 		if(rdbtnOneCellShips.isSelected()) shipSize=1;
@@ -337,6 +333,10 @@ public class SetMyShipsFrame extends JFrame {
 			randomJB.setEnabled(false);
 			return -1;}
 	}	
+	
+//------------------------------------------------	
+	
+	
 	private JButton getBtnDone() {
 		if (btnDone == null) {
 			btnDone = new JButton("DONE");
