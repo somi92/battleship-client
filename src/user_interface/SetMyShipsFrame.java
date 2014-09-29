@@ -6,6 +6,8 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import main.Main;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ButtonGroup;
@@ -31,6 +33,8 @@ import javax.swing.event.ChangeEvent;
 
 public class SetMyShipsFrame extends JFrame {
 
+	Main main = null;
+	
 	public SetMyShipsFrame me = this;
 	SetMyShipsManager myShipsManager = new SetMyShipsManager(me);
 	
@@ -51,26 +55,29 @@ public class SetMyShipsFrame extends JFrame {
 	public char orijentation = 'H';
 	
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SetMyShipsFrame frame = new SetMyShipsFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	/**
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					SetMyShipsFrame frame = new SetMyShipsFrame();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
 	 */
-	public SetMyShipsFrame() {
+	public SetMyShipsFrame(Main main) {
+		this.main = main;
+		
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 485, 381);
 		contentPane = new JPanel();
@@ -333,6 +340,14 @@ public class SetMyShipsFrame extends JFrame {
 	private JButton getBtnDone() {
 		if (btnDone == null) {
 			btnDone = new JButton("DONE");
+			btnDone.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					//USLOVI DA LI SU SVI BRODICI POSTAVLJENI
+					main.mainGui.setVisible(true);
+					setVisible(false);
+				}
+			});
 			btnDone.setHorizontalTextPosition(SwingConstants.CENTER);
 		}
 		return btnDone;
@@ -340,6 +355,14 @@ public class SetMyShipsFrame extends JFrame {
 	private JButton getBtnCancle() {
 		if (btnCancle == null) {
 			btnCancle = new JButton("CANCLE");
+			btnCancle.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					main.startFrame.setVisible(true);
+					setVisible(false);
+					
+				}
+			});
 			btnCancle.setHorizontalTextPosition(SwingConstants.CENTER);
 		}
 		return btnCancle;
