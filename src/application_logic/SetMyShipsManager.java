@@ -130,7 +130,7 @@ public class SetMyShipsManager {
 				
 				int sifraBroda = workingFrame.updateLabels();
 				
-				if((sifraBroda)!=0){
+				if((sifraBroda)!=-1){
 					
 					for(int i=0;i<10;i++)
 						for(int j=0;j<10;j++){

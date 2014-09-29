@@ -11,7 +11,6 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import java.awt.Dimension;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.JButton;
 
 import application_logic.SeaFieldManager;
@@ -149,12 +148,6 @@ public class MainGUI extends JFrame {
 			btnNewButton_2 = new JButton("New button");
 		}
 		return btnNewButton_2;
-	}
-	private JPanel getPanel_1() {
-		if (panel_1 == null) {
-			panel_1 = new JPanel();
-		}
-		return panel_1;
 	}
 	private JPanel getPanelSeaFieldOpponent1() {
 		if (panelSeaFieldOpponent1 == null) {

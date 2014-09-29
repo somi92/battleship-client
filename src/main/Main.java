@@ -1,9 +1,6 @@
 package main;
 
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-
 import user_interface.MainGUI;
 import user_interface.SetMyShipsFrame;
 import user_interface.StartFrame;
