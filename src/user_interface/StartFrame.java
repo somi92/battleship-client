@@ -125,7 +125,7 @@ public class StartFrame extends JFrame {
 	private JTextField getTxtIp() {
 		if (txtIp == null) {
 			txtIp = new JTextField();
-			txtIp.setText("servers IP");
+			txtIp.setText("192.168.1.181");
 			txtIp.setBounds(33, 55, 118, 23);
 			txtIp.setColumns(10);
 		}

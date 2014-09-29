@@ -14,19 +14,25 @@ import java.awt.BorderLayout;
 public class SeaFieldPanel extends JPanel {
 
 	public ImageIcon seaImg = new ImageIcon(getClass().getResource("/resources/sea.png"));
+	public ImageIcon shipImg = new ImageIcon(getClass().getResource("/resources/brodic.jpg"));
 	
-	private JButton[][] seaFieldMatrix;
 	
+	
+	private JButton[][] seaButtonMatrix;
+	
+	
+// 1. konstruktor
 	public SeaFieldPanel() {
 		setLayout(null);
 		
-		seaFieldMatrix = createSeaField();
+		seaButtonMatrix = createSeaField();
 		
 		for(int row=0; row<10; row++)
 			for(int col=0; col<10; col++)	
 				//add(seaFieldMatrix[row][col],BorderLayout.CENTER);	
-				add(seaFieldMatrix[row][col]);
+				add(seaButtonMatrix[row][col]);
 	}
+	
 
 	/**
 	 * @return 2D array of length 100, and all buttons inside are initialized and
@@ -40,8 +46,7 @@ public class SeaFieldPanel extends JPanel {
 				for(int row=0; row<10; row++)
 					for(int col=0; col<10; col++){				
 						cellName = ""+row+col;
-						
-						JButton btn = new JButton(seaImg);
+						JButton btn = new JButton(seaImg);						
 						btn.setName(cellName);
 						btn.setBorder(null);
 						btn.setBounds(((col*25)+10),((row*25)+25), 25, 25);
@@ -51,5 +56,13 @@ public class SeaFieldPanel extends JPanel {
 				
 				return matrix;
 			}
-
+		
+		public void formirajMyFieldPane(int[][] logicMatrix){
+			
+			for(int i=0;i<10;i++)
+				for(int j=0;j<10;j++)				
+					if(logicMatrix[i][j] != 0) seaButtonMatrix[i][j].setIcon(shipImg);
+			
+		}
+		
 }

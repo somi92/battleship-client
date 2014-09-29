@@ -31,6 +31,8 @@ public class SetMyShipsManager {
 //	public int iExit = -1;
 //	public int jExit = -1;
 
+	public int[][] logicMatrix = new int[10][10];
+	
 	public String [] suggestedButtonsNames = null;
 	public LinkedList<String> existingBoats = new LinkedList<String>();
 
@@ -148,7 +150,10 @@ public class SetMyShipsManager {
 					//System.out.println();
 				}
 				
-				gameBoardMask.ispisi();}
+				gameBoardMask.ispisi();
+				// prosledjujem logicku matricu iz MyGameBoardMask u setMyShipFrame
+				logicMatrix = gameBoardMask.gameBoard;
+			}
 		});
 	}
 		

@@ -2,7 +2,7 @@ package application_logic;
 
 public class MyGameBoardMask {
 
-	private int[][] gameBoard = new int [10][10];	
+	public int[][] gameBoard = new int [10][10];	
 	public int[][] logicStartMatrix = new int[10][10];
 
 	public static final int PRAZAN=0; // nema broda na tom polju

@@ -1,5 +1,8 @@
 package user_interface;
 
+import interfaces.ClientEventListener;
+import interfaces.PeerEventListener;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
@@ -7,6 +10,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import main.Main;
 import net.miginfocom.swing.MigLayout;
+import network_communication.ClientThread;
+import network_communication.CommunicationController;
+import network_communication.ServerSideThread;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
@@ -21,6 +28,9 @@ import application_logic.SetMyShipsManager;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
@@ -32,6 +42,7 @@ public class SetMyShipsFrame extends JFrame {
 	SetMyShipsManager myShipsManager = new SetMyShipsManager(me);
 	
 	JButton[][] buttonGameBoard = myShipsManager.initializeButtonsforGameBoard();
+	
 
 	private JPanel contentPane;
 	private JPanel centerPanel;
@@ -48,21 +59,21 @@ public class SetMyShipsFrame extends JFrame {
 	public char orijentation = 'H';
 	
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SetMyShipsFrame frame = new SetMyShipsFrame(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	/**
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					SetMyShipsFrame frame = new SetMyShipsFrame(null);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
@@ -343,7 +354,16 @@ public class SetMyShipsFrame extends JFrame {
 			btnDone.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					
+// prebacujem logicalMatrix iz setMyShipsManager u setMyShipFrame
+					 
+					main.mainGui.logicMatrixMine = myShipsManager.logicMatrix;
+					main.mainGui.popuniniMojePoljeBrodicima();
+					
 					//USLOVI DA LI SU SVI BRODICI POSTAVLJENI
+					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					
+					sveKrene();
+				
 					main.mainGui.setVisible(true);
 					setVisible(false);
 				}
@@ -374,6 +394,103 @@ public class SetMyShipsFrame extends JFrame {
 			label.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 		return label;
+		}
+	
+	
+	//
+	BlockingQueue<String> queue;
+	CommunicationController controler;
+	ServerSideThread myServer;
+	ClientThread myClient;
+	
+	
+	
+	public void sveKrene(){
+		
+		String userName = "Stefan";
+		queue = new ArrayBlockingQueue<String>(10);
+		controler = new CommunicationController();
+		myServer = new ServerSideThread(queue,0,userName);
+		myClient = new ClientThread(controler, queue, "192.168.1.181", 9080);
+		
+		myClient.setClientEventListener(new ClientEventListener() {
+			
+			@Override
+			public void onWait(String message) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onStart(String message) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onBye(String message) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		myClient.setPeerEventListener(new PeerEventListener() {
+			
+			@Override
+			public void onSynchronized() {
+				
+				
+				EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+				    	  main.mainGui.textPane.setText("Sinhronizovani !");
+				       }
+				 });
+				
+			}
+			
+			@Override
+			public void onRnd(boolean myTurn, int myRND, int myIndex,
+					String peer1Username, int peer1Index, String peer2Username,
+					int peer2Index) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onNext(String username, boolean myTurn) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onBye() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public int onAttacked(int coorI, int coorJ) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+			@Override
+			public void onAttackResponse(String username, int coorI, int coorJ,
+					int status, boolean myTurn) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
+		Thread server = new Thread(myServer);
+		Thread client = new Thread(myClient);
+		
+		server.start();
+		client.start();
+
 	}
+	
+	
 }
 
