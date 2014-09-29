@@ -32,6 +32,7 @@ public class SetMyShipsFrame extends JFrame {
 	SetMyShipsManager myShipsManager = new SetMyShipsManager(me);
 	
 	JButton[][] buttonGameBoard = myShipsManager.initializeButtonsforGameBoard();
+	
 
 	private JPanel contentPane;
 	private JPanel centerPanel;
@@ -48,21 +49,21 @@ public class SetMyShipsFrame extends JFrame {
 	public char orijentation = 'H';
 	
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SetMyShipsFrame frame = new SetMyShipsFrame(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	/**
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					SetMyShipsFrame frame = new SetMyShipsFrame(null);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
@@ -343,7 +344,13 @@ public class SetMyShipsFrame extends JFrame {
 			btnDone.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					
+// prebacujem logicalMatrix iz setMyShipsManager u setMyShipFrame
+					 
+					main.mainGui.logicMatrixMine = myShipsManager.logicMatrix;
+					main.mainGui.popuniniMojePoljeBrodicima();
+					
 					//USLOVI DA LI SU SVI BRODICI POSTAVLJENI
+					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 					main.mainGui.setVisible(true);
 					setVisible(false);
 				}

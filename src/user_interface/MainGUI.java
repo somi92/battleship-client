@@ -25,9 +25,13 @@ public class MainGUI extends JFrame {
 	public Main main = null;
 	
 	SeaFieldManager seaFieldManager = null;
-	JPanel seaFieldMy = null;
+	SeaFieldPanel seaFieldMy = null;
 	JPanel seaFieldOpponent1 = null;
 	JPanel seaFieldOpponent2 = null;
+	
+	int[][] logicMatrixMine = new int[10][10];
+	int[][] logicMatrixOpponent1 = new int[10][10];
+	int[][] logicMatrixOpponent2 = new int[10][10];
 	
 	
 	private JPanel contentPane;
@@ -39,7 +43,6 @@ public class MainGUI extends JFrame {
 	private JButton btnNewButton;
 	private JButton btnNewButton_1;
 	private JButton btnNewButton_2;
-	private JPanel panel_1;
 	private JPanel panelSeaFieldOpponent1;
 	private JPanel panelSeaFieldMy;
 	private JPanel panelSeaFieldOpponent2;
@@ -212,4 +215,15 @@ public class MainGUI extends JFrame {
 		}
 		return labelOpponent2;
 	}
+	
+	
+	public void popuniniMojePoljeBrodicima(){
+		seaFieldMy.formirajMyFieldPane(logicMatrixMine);
+		
+	}
+	
+	
+	
+	
+	
 }
