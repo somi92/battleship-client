@@ -26,8 +26,8 @@ public class MainGUI extends JFrame {
 	
 	SeaFieldManager seaFieldManager = null;
 	SeaFieldPanel seaFieldMy = null;
-	JPanel seaFieldOpponent1 = null;
-	JPanel seaFieldOpponent2 = null;
+	SeaFieldPanel seaFieldOpponent1 = null;
+	SeaFieldPanel seaFieldOpponent2 = null;
 	
 	int[][] logicMatrixMine = new int[10][10];
 	int[][] logicMatrixOpponent1 = new int[10][10];
@@ -47,9 +47,9 @@ public class MainGUI extends JFrame {
 	private JPanel panelSeaFieldMy;
 	private JPanel panelSeaFieldOpponent2;
 	private JPanel upperPanel;
-	private JLabel labelOpponent1;
-	private JLabel labelMe;
-	private JLabel labelOpponent2;
+	public JLabel labelOpponent1;
+	public JLabel labelMe;
+	public JLabel labelOpponent2;
 
 //	/**
 //	 * Launch the application.
@@ -74,10 +74,10 @@ public class MainGUI extends JFrame {
 	public MainGUI(Main main) {
 		this.main = main; 
 		
-		seaFieldManager = new SeaFieldManager();
-		seaFieldMy = seaFieldManager.createSeaField();
-		seaFieldOpponent1 = seaFieldManager.createSeaField();
-		seaFieldOpponent2 = seaFieldManager.createSeaField();;
+		seaFieldManager = new SeaFieldManager(this);
+		seaFieldMy = seaFieldManager.createSeaField(true,0);
+		seaFieldOpponent1 = seaFieldManager.createSeaField(false,1);
+		seaFieldOpponent2 = seaFieldManager.createSeaField(false,2);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 830, 460);
@@ -121,7 +121,7 @@ public class MainGUI extends JFrame {
 	private JTextPane getTextPane() {
 		if (textPane == null) {
 			textPane = new JTextPane();
-			textPane.setEnabled(false);
+			textPane.setEditable(false);
 		}
 		return textPane;
 	}
@@ -222,8 +222,25 @@ public class MainGUI extends JFrame {
 		seaFieldMy.formirajMyFieldPane(logicMatrixMine);
 		
 	}
+
+	public void pozoviMetoduProtokolaSendSHT(int opponent, int iEnter, int jEnter) {
+		String userName;
+		if(opponent==1) userName=labelOpponent1.getText();
+		else userName=labelOpponent2.getText();
+		
+		main.setMyShipsFrame.myClient.sendSHT(userName, iEnter, jEnter);
+		System.out.println("Gadjao sam "+userName+iEnter+jEnter);
+		seaFieldOpponent1.setEnableFalseToAll();
+		seaFieldOpponent2.setEnableFalseToAll();
+		
+	}
 	
-	
+	public int checkMyMatrix(int i, int j){
+		
+		
+		
+		return 0;
+	}
 	
 	
 	

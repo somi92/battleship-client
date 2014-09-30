@@ -43,7 +43,12 @@ public class SetMyShipsFrame extends JFrame {
 	
 	JButton[][] buttonGameBoard = myShipsManager.initializeButtonsforGameBoard();
 	
-
+	String myUserName = "";
+	String mainServerIP = "192.168.1.181";
+	
+	
+	
+	
 	private JPanel contentPane;
 	private JPanel centerPanel;
 	private JPanel upPanel;
@@ -360,7 +365,7 @@ public class SetMyShipsFrame extends JFrame {
 					main.mainGui.popuniniMojePoljeBrodicima();
 					
 					//USLOVI DA LI SU SVI BRODICI POSTAVLJENI
-					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					main.mainGui.labelMe.setText(myUserName);
 					
 					sveKrene();
 				
@@ -404,32 +409,48 @@ public class SetMyShipsFrame extends JFrame {
 	ClientThread myClient;
 	
 	
+
+	public void setUserAndServerIP(String userName, String serverIP) {
+		this.myUserName = userName;
+		this.mainServerIP = serverIP;
+	}
+	
 	
 	public void sveKrene(){
-		
-		String userName = "Stefan";
+
 		queue = new ArrayBlockingQueue<String>(10);
 		controler = new CommunicationController();
-		myServer = new ServerSideThread(queue,0,userName);
+		myServer = new ServerSideThread(queue,0,myUserName);
 		myClient = new ClientThread(controler, queue, "192.168.1.181", 9080);
 		
 		myClient.setClientEventListener(new ClientEventListener() {
 			
 			@Override
-			public void onWait(String message) {
-				// TODO Auto-generated method stub
-				
+			public void onWait(String message) {  
+		    	  EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+				    	  main.mainGui.textPane.setText(main.mainGui.textPane.getText() + "\nPrijavljeni ste na glavni server ali se ceka jos igraca.");
+				       }
+				 });		
 			}
 			
 			@Override
 			public void onStart(String message) {
-				// TODO Auto-generated method stub
+				EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+				    	  main.mainGui.textPane.setText(main.mainGui.textPane.getText() + "\nPostoji dovoljan broj igraca na serveru.");
+				       }
+				 });
 				
 			}
 			
 			@Override
 			public void onBye(String message) {
-				// TODO Auto-generated method stub
+				EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+				    	  main.mainGui.textPane.setText(main.mainGui.textPane.getText() + "\nSisao si sa servera.");
+				       }
+				 });
 				
 			}
 		});
@@ -438,42 +459,59 @@ public class SetMyShipsFrame extends JFrame {
 			
 			@Override
 			public void onSynchronized() {
-				
-				
 				EventQueue.invokeLater(new Runnable() {
-				      public void run() {
-				    	  main.mainGui.textPane.setText("Sinhronizovani !");
-				       }
+				      public void run() {  
+						    	  main.mainGui.textPane.setText(main.mainGui.textPane.getText() + "\nSinhronizovani !");  
+				      }
 				 });
 				
 			}
 			
 			@Override
 			public void onRnd(boolean myTurn, int myRND, int myIndex,
-					String peer1Username, int peer1Index, String peer2Username,
+					final String peer1Username, int peer1Index, final String peer2Username,
 					int peer2Index) {
-				// TODO Auto-generated method stub
+						
+				 EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+						main.mainGui.labelOpponent1.setText(peer1Username);
+						main.mainGui.labelOpponent2.setText(peer2Username);
+						
+				       }
+				 });
 				
+		
 			}
 			
 			@Override
-			public void onNext(String username, boolean myTurn) {
-				// TODO Auto-generated method stub
+			public void onNext(final String username, boolean myTurn) {
+				 EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+						main.mainGui.textPane.setText(main.mainGui.textPane.getText() + "\nIgrac "+ username +" je propustio potez ili je diskonektovan.");  
+						
+				       }
+				 });
 				
 			}
 			
 			@Override
 			public void onBye() {
-				// TODO Auto-generated method stub
-				
+				EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+						main.mainGui.textPane.setText(main.mainGui.textPane.getText() + "Kraj igre. ??? ");  
+				       }
+				 });
 			}
 			
+			//Mene gadja NEKO, proverim moju logigicku matricu i vratim status poteza pogledati interface BattleShipStatus
 			@Override
 			public int onAttacked(int coorI, int coorJ) {
 				// TODO Auto-generated method stub
 				return 0;
 			}
 			
+			// onaj ko je gadjan, njegove kordinate i status
+			//ako je myTurn tru znaci otkljucavam sva polja
 			@Override
 			public void onAttackResponse(String username, int coorI, int coorJ,
 					int status, boolean myTurn) {

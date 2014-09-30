@@ -3,7 +3,7 @@ package application_logic;
 public class MyGameBoardMask {
 
 	public int[][] gameBoard = new int [10][10];	
-	public int[][] logicStartMatrix = new int[10][10];
+	//public int[][] logicStartMatrix = new int[10][10];
 
 	public static final int PRAZAN=0; // nema broda na tom polju
 	public static final int POSTAVLJEN=1;
@@ -41,20 +41,22 @@ public class MyGameBoardMask {
 		}
 		break;
 		case 3: {
-			shipTypeThree1Sum-=3;
+			shipTypeThree1Sum=shipTypeThree1Sum - 3;
 			gameBoard[m][n]=-field;
 		}
 		break;
 		case 4: {
-			shipTypeThree2Sum-=4;
+			shipTypeThree2Sum=shipTypeThree2Sum-4;
 			gameBoard[m][n]=-field;
 		}
 		case 5: {
-			shipTypeFiveSum-=5;
+			shipTypeFiveSum=shipTypeFiveSum-5;
 			gameBoard[m][n]=-field;
 		}
 		break;
 	}
+		
+		
 	return -field;
 }
 
