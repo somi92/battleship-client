@@ -1,12 +1,16 @@
 package user_interface;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Label;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.FlowLayout;
+
+import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -19,10 +23,21 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
+
+import utilities.BattleShipStatus;
+
 import java.awt.Component;
 
 public class MainGUI extends JFrame {
 	public Main main = null;
+	
+	//kada mene neko gadja
+	int sifra = -1;
+	
+	public ImageIcon xImg = new ImageIcon(getClass().getResource("/resources/x.png"));
+	public ImageIcon bombImg = new ImageIcon(getClass().getResource("/resources/bomb.png"));
+	
+
 	
 	SeaFieldManager seaFieldManager = null;
 	SeaFieldPanel seaFieldMy = null;
@@ -230,8 +245,8 @@ public class MainGUI extends JFrame {
 		
 		main.setMyShipsFrame.myClient.sendSHT(userName, iEnter, jEnter);
 		System.out.println("Gadjao sam "+userName+iEnter+jEnter);
-		seaFieldOpponent1.setEnableFalseToAll();
-		seaFieldOpponent2.setEnableFalseToAll();
+//		seaFieldOpponent1.setEnableToAll(false);
+//		seaFieldOpponent2.setEnableToAll(false);
 		
 	}
 	
@@ -240,6 +255,30 @@ public class MainGUI extends JFrame {
 		
 		
 		return 0;
+	}
+
+	public void azurirajMojaPolja(int sifra, int i, int j) {
+		
+		//ili pogodio ili potovio
+		if(sifra!=BattleShipStatus.SHIP_MISSED)
+			seaFieldMy.seaButtonMatrix[i][j].setIcon(bombImg);
+		else seaFieldMy.seaButtonMatrix[i][j].setIcon(xImg);
+
+	}
+
+	public void azurirajOpponentsPolja(int sifra, int i, int j,int opponent) {
+		
+		if(opponent==1){
+			if(sifra!=BattleShipStatus.SHIP_MISSED)
+				seaFieldOpponent1.seaButtonMatrix[i][j].setIcon(bombImg);
+			else seaFieldOpponent1.seaButtonMatrix[i][j].setIcon(xImg);
+		}
+		else{
+			if(sifra!=BattleShipStatus.SHIP_MISSED)
+				seaFieldOpponent2.seaButtonMatrix[i][j].setIcon(bombImg);
+			else seaFieldOpponent2.seaButtonMatrix[i][j].setIcon(xImg);	
+		}
+		
 	}
 	
 	

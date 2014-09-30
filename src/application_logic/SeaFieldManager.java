@@ -73,7 +73,7 @@ public class SeaFieldManager {
 									mainGUI.pozoviMetoduProtokolaSendSHT(1,iEnter,jEnter);
 									
 								}else{//opponent2
-									System.out.println("kliknuo sam na protivnika1.");
+									System.out.println("kliknuo sam na protivnika2.");
 									mainGUI.pozoviMetoduProtokolaSendSHT(2,iEnter,jEnter);
 									
 								}

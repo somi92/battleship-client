@@ -65,10 +65,21 @@ public class SeaFieldPanel extends JPanel {
 			
 		}
 		
-		public void setEnableFalseToAll(){
+		public void formirajopponentsFieldPane(int[][] logicMatrix){
+			
 			for(int i=0;i<10;i++)
-				for(int j=0;j<10;j++)	
-					seaButtonMatrix[i][j].setEnabled(false);
+				for(int j=0;j<10;j++)				
+					if(logicMatrix[i][j] != 0) seaButtonMatrix[i][j].setIcon(shipImg);
+			
 		}
+		
+		
+		
+		
+//		public void setEnableToAll(boolean isEnabled){
+//			for(int i=0;i<10;i++)
+//				for(int j=0;j<10;j++)	
+//					seaButtonMatrix[i][j].setEnabled(isEnabled);
+//		}
 		
 }
