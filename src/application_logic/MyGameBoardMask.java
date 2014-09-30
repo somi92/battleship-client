@@ -1,21 +1,24 @@
 package application_logic;
 
+import protocol.BattleShipClient;
+import utilities.BattleShipStatus;
+
 public class MyGameBoardMask {
 
 	public int[][] gameBoard = new int [10][10];	
-	public int[][] logicStartMatrix = new int[10][10];
+	//public int[][] logicStartMatrix = new int[10][10];
 
 	public static final int PRAZAN=0; // nema broda na tom polju
 	public static final int POSTAVLJEN=1;
 	public static final int POGODJEN=2;
 	public static final int POTOPLJEN=3;
 	public static final int PROMASEN=4;
-	private int shipTypeOneSum=2;
+	private int shipTypeOneSum=1;
 	private int shipTypeTwoSum=4;
 	private int shipTypeThree1Sum=9;
 	private int shipTypeThree2Sum=12;
 	private int shipTypeFiveSum=25;
-
+	private int totalSum=51;
 	public MyGameBoardMask(){
 		for(int i=0;i<10;i++)
 			for (int j=0;j<10;j++)
@@ -30,31 +33,73 @@ public class MyGameBoardMask {
 		int field=gameBoard[m][n];
 		
 		switch(field){
+		
+		
+		case 0:
+			
+			return BattleShipStatus.SHIP_MISSED;
 		case 1: {
 			shipTypeOneSum=shipTypeOneSum-1;
 			gameBoard[m][n]=-field;
+			totalSum-=field;
+			if(totalSum==0)
+				return BattleShipStatus.FLEET_DESTROYED;
+			return BattleShipStatus.SHIP_SUNKED;
+			
 		}
-		break;
+		
 		case 2:{
 			shipTypeTwoSum=shipTypeTwoSum-2;
 			gameBoard[m][n]=-field;
+			totalSum-=field;
+			if(totalSum==0)
+				return BattleShipStatus.FLEET_DESTROYED;
+			if(shipTypeTwoSum==0)
+				return BattleShipStatus.SHIP_SUNKED;
+			else
+				return BattleShipStatus.SHIP_HIT;
+					
 		}
-		break;
+		
 		case 3: {
-			shipTypeThree1Sum-=3;
+			shipTypeThree1Sum=shipTypeThree1Sum - 3;
 			gameBoard[m][n]=-field;
+			totalSum-=field;
+			if(totalSum==0)
+				return BattleShipStatus.FLEET_DESTROYED;
+			if(shipTypeThree1Sum==0)
+				return BattleShipStatus.SHIP_SUNKED;
+			else
+				return BattleShipStatus.SHIP_HIT;
+			
 		}
-		break;
+		
 		case 4: {
-			shipTypeThree2Sum-=4;
+			shipTypeThree2Sum=shipTypeThree2Sum-4;
 			gameBoard[m][n]=-field;
+			totalSum-=field;
+			if(totalSum==0)
+				return BattleShipStatus.FLEET_DESTROYED;
+			if(shipTypeThree2Sum==0)
+				return BattleShipStatus.SHIP_SUNKED;
+			else
+				return BattleShipStatus.SHIP_HIT;
 		}
 		case 5: {
-			shipTypeFiveSum-=5;
+			shipTypeFiveSum=shipTypeFiveSum-5;
 			gameBoard[m][n]=-field;
+			totalSum-=field;
+			if(totalSum==0)
+				return BattleShipStatus.FLEET_DESTROYED;
+			if(shipTypeFiveSum==0)
+				return BattleShipStatus.SHIP_SUNKED;
+			else
+				return BattleShipStatus.SHIP_HIT;
 		}
-		break;
+		
 	}
+		
+		
 	return -field;
 }
 

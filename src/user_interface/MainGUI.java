@@ -1,12 +1,16 @@
 package user_interface;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Label;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.FlowLayout;
+
+import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -19,15 +23,26 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
+
+import utilities.BattleShipStatus;
+
 import java.awt.Component;
 
 public class MainGUI extends JFrame {
 	public Main main = null;
 	
+	//kada mene neko gadja
+	int sifra = -1;
+	
+	public ImageIcon xImg = new ImageIcon(getClass().getResource("/resources/x.png"));
+	public ImageIcon bombImg = new ImageIcon(getClass().getResource("/resources/bomb.png"));
+	
+
+	
 	SeaFieldManager seaFieldManager = null;
 	SeaFieldPanel seaFieldMy = null;
-	JPanel seaFieldOpponent1 = null;
-	JPanel seaFieldOpponent2 = null;
+	SeaFieldPanel seaFieldOpponent1 = null;
+	SeaFieldPanel seaFieldOpponent2 = null;
 	
 	int[][] logicMatrixMine = new int[10][10];
 	int[][] logicMatrixOpponent1 = new int[10][10];
@@ -47,9 +62,9 @@ public class MainGUI extends JFrame {
 	private JPanel panelSeaFieldMy;
 	private JPanel panelSeaFieldOpponent2;
 	private JPanel upperPanel;
-	private JLabel labelOpponent1;
-	private JLabel labelMe;
-	private JLabel labelOpponent2;
+	public JLabel labelOpponent1;
+	public JLabel labelMe;
+	public JLabel labelOpponent2;
 
 //	/**
 //	 * Launch the application.
@@ -74,10 +89,10 @@ public class MainGUI extends JFrame {
 	public MainGUI(Main main) {
 		this.main = main; 
 		
-		seaFieldManager = new SeaFieldManager();
-		seaFieldMy = seaFieldManager.createSeaField();
-		seaFieldOpponent1 = seaFieldManager.createSeaField();
-		seaFieldOpponent2 = seaFieldManager.createSeaField();;
+		seaFieldManager = new SeaFieldManager(this);
+		seaFieldMy = seaFieldManager.createSeaField(true,0);
+		seaFieldOpponent1 = seaFieldManager.createSeaField(false,1);
+		seaFieldOpponent2 = seaFieldManager.createSeaField(false,2);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 830, 460);
@@ -121,7 +136,7 @@ public class MainGUI extends JFrame {
 	private JTextPane getTextPane() {
 		if (textPane == null) {
 			textPane = new JTextPane();
-			textPane.setEnabled(false);
+			textPane.setEditable(false);
 		}
 		return textPane;
 	}
@@ -222,8 +237,43 @@ public class MainGUI extends JFrame {
 		seaFieldMy.formirajMyFieldPane(logicMatrixMine);
 		
 	}
-	
-	
+
+	public void pozoviMetoduProtokolaSendSHT(int opponent, int iEnter, int jEnter) {
+		seaFieldOpponent1.setEnableToAll(false);
+		seaFieldOpponent2.setEnableToAll(false);
+		String userName;
+		if(opponent==1) userName=labelOpponent1.getText();
+		else userName=labelOpponent2.getText();
+		
+		main.setMyShipsFrame.myClient.sendSHT(userName, iEnter, jEnter);
+		System.out.println("Gadjao sam "+userName+iEnter+jEnter);
+		
+	}
+
+
+	public void azurirajMojaPolja(int sifra, int i, int j) {
+		
+		//ili pogodio ili potovio
+		if(sifra!=BattleShipStatus.SHIP_MISSED)
+			seaFieldMy.seaButtonMatrix[i][j].setIcon(bombImg);
+		else seaFieldMy.seaButtonMatrix[i][j].setIcon(xImg);
+
+	}
+
+	public void azurirajOpponentsPolja(int sifra, int i, int j,int opponent) {
+		
+		if(opponent==1){
+			if(sifra!=BattleShipStatus.SHIP_MISSED)
+				seaFieldOpponent1.seaButtonMatrix[i][j].setIcon(bombImg);
+			else seaFieldOpponent1.seaButtonMatrix[i][j].setIcon(xImg);
+		}
+		else{
+			if(sifra!=BattleShipStatus.SHIP_MISSED)
+				seaFieldOpponent2.seaButtonMatrix[i][j].setIcon(bombImg);
+			else seaFieldOpponent2.seaButtonMatrix[i][j].setIcon(xImg);	
+		}
+		
+	}
 	
 	
 	

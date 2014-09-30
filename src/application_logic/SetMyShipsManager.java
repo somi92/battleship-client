@@ -18,7 +18,7 @@ public class SetMyShipsManager {
 	
 	public ImageIcon seaImg = new ImageIcon(getClass().getResource("/resources/sea.png"));
 	public ImageIcon shipImage = new ImageIcon(getClass().getResource("/resources/brodic.jpg"));
-	public ImageIcon xImg;
+	public ImageIcon xImg = new ImageIcon(getClass().getResource("/resources/x.png"));
 	
 	
 	
@@ -36,7 +36,7 @@ public class SetMyShipsManager {
 	public String [] suggestedButtonsNames = null;
 	public LinkedList<String> existingBoats = new LinkedList<String>();
 
-	MyGameBoardMask gameBoardMask = new MyGameBoardMask();
+	public MyGameBoardMask gameBoardMask = new MyGameBoardMask();
 
 	public SetMyShipsManager(SetMyShipsFrame workingFrame) {
 	this.workingFrame = workingFrame;

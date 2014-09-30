@@ -43,7 +43,12 @@ public class SetMyShipsFrame extends JFrame {
 	
 	JButton[][] buttonGameBoard = myShipsManager.initializeButtonsforGameBoard();
 	
-
+	String myUserName = "";
+	String mainServerIP = "192.168.1.181";
+	
+	
+	
+	
 	private JPanel contentPane;
 	private JPanel centerPanel;
 	private JPanel upPanel;
@@ -360,7 +365,7 @@ public class SetMyShipsFrame extends JFrame {
 					main.mainGui.popuniniMojePoljeBrodicima();
 					
 					//USLOVI DA LI SU SVI BRODICI POSTAVLJENI
-					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					main.mainGui.labelMe.setText(myUserName);
 					
 					sveKrene();
 				
@@ -404,32 +409,48 @@ public class SetMyShipsFrame extends JFrame {
 	ClientThread myClient;
 	
 	
+
+	public void setUserAndServerIP(String userName, String serverIP) {
+		this.myUserName = userName;
+		this.mainServerIP = serverIP;
+	}
+	
 	
 	public void sveKrene(){
-		
-		String userName = "Stefan";
+
 		queue = new ArrayBlockingQueue<String>(10);
 		controler = new CommunicationController();
-		myServer = new ServerSideThread(queue,0,userName);
+		myServer = new ServerSideThread(queue,0,myUserName);
 		myClient = new ClientThread(controler, queue, "192.168.1.181", 9080);
 		
 		myClient.setClientEventListener(new ClientEventListener() {
 			
 			@Override
-			public void onWait(String message) {
-				// TODO Auto-generated method stub
-				
+			public void onWait(String message) {  
+		    	  EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+				    	  main.mainGui.textPane.setText("Prijavljeni ste na glavni server ali se ceka jos igraca.\n" + main.mainGui.textPane.getText());
+				       }
+				 });		
 			}
 			
 			@Override
 			public void onStart(String message) {
-				// TODO Auto-generated method stub
+				EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+				    	  main.mainGui.textPane.setText("Postoji dovoljan broj igraca na serveru.\n" + main.mainGui.textPane.getText());
+				       }
+				 });
 				
 			}
 			
 			@Override
 			public void onBye(String message) {
-				// TODO Auto-generated method stub
+				EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+				    	  main.mainGui.textPane.setText("Sisao si sa servera.\n" + main.mainGui.textPane.getText());
+				       }
+				 });
 				
 			}
 		});
@@ -438,46 +459,102 @@ public class SetMyShipsFrame extends JFrame {
 			
 			@Override
 			public void onSynchronized() {
-				
-				
 				EventQueue.invokeLater(new Runnable() {
-				      public void run() {
-				    	  main.mainGui.textPane.setText("Sinhronizovani !");
-				       }
+				      public void run() {  
+						    	  main.mainGui.textPane.setText("Sinhronizovani !\n" + main.mainGui.textPane.getText());  
+				      }
 				 });
 				
 			}
 			
 			@Override
-			public void onRnd(boolean myTurn, int myRND, int myIndex,
-					String peer1Username, int peer1Index, String peer2Username,
+			public void onRnd(final boolean myTurn, int myRND, int myIndex,
+					final String peer1Username, int peer1Index, final String peer2Username,
 					int peer2Index) {
-				// TODO Auto-generated method stub
+						
+				 EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+						main.mainGui.labelOpponent1.setText(peer1Username);
+						main.mainGui.labelOpponent2.setText(peer2Username);
+						
+						//PRATI KO JE NA REDu
+						
+						
+						if(myTurn){
+					main.mainGui.seaFieldOpponent1.setEnableToAll(true);
+							main.mainGui.seaFieldOpponent2.setEnableToAll(true);
+							main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText());  
+						} 
+						
+				       }
+				 });
 				
+		
 			}
 			
 			@Override
-			public void onNext(String username, boolean myTurn) {
-				// TODO Auto-generated method stub
+			public void onNext(final String username, final boolean myTurn) {
+				 EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+						main.mainGui.textPane.setText("Igrac "+ username +" je propustio potez ili je diskonektovan.\n" + main.mainGui.textPane.getText());  
+						if(myTurn){
+//						main.mainGui.seaFieldOpponent1.setEnableToAll(true);
+	//					main.mainGui.seaFieldOpponent2.setEnableToAll(true);
+							main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText());  
+						} 
+				      }
+				 });
 				
 			}
 			
 			@Override
 			public void onBye() {
-				// TODO Auto-generated method stub
-				
+				EventQueue.invokeLater(new Runnable() {
+				      public void run() {
+						main.mainGui.textPane.setText("Kraj igre. ??? \n" + main.mainGui.textPane.getText());  
+				       }
+				 });
 			}
 			
+			//Mene gadja NEKO, proverim moju logigicku matricu i vratim status poteza pogledati interface BattleShipStatus
 			@Override
 			public int onAttacked(int coorI, int coorJ) {
-				// TODO Auto-generated method stub
-				return 0;
+				
+				int sifra;
+				sifra = myShipsManager.gameBoardMask.takeAHit(coorI, coorJ);
+				main.mainGui.azurirajMojaPolja(sifra,coorI,coorJ);
+				
+				return sifra;
 			}
 			
+			// onaj ko je gadjan, njegove kordinate i status
+			//ako je myTurn tru znaci otkljucavam sva polja
 			@Override
 			public void onAttackResponse(String username, int coorI, int coorJ,
 					int status, boolean myTurn) {
-				// TODO Auto-generated method stub
+				
+				if(!username.equals(myUserName)){
+					if(username.equals(main.mainGui.labelOpponent1.getText())){
+						main.mainGui.azurirajOpponentsPolja(status,coorI,coorJ,1);
+					}
+					else{//opponent 2 je
+						if(username.equals(main.mainGui.labelOpponent2.getText()))
+							main.mainGui.azurirajOpponentsPolja(status,coorI,coorJ,2);
+					}	
+				}	
+				
+				///
+				
+				
+				
+				
+				main.mainGui.textPane.setText("Igrac "+ username +" je gadjan.\n" + main.mainGui.textPane.getText());  
+				
+				if(myTurn){
+					main.mainGui.seaFieldOpponent1.setEnableToAll(true);
+					main.mainGui.seaFieldOpponent2.setEnableToAll(true);
+					main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText() );  
+				} 
 				
 			}
 		});

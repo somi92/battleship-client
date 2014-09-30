@@ -15,6 +15,8 @@ import main.Main;
 import java.awt.Component;
 import javax.swing.JTextField;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class StartFrame extends JFrame {
 	Main main = null;
@@ -27,9 +29,10 @@ public class StartFrame extends JFrame {
 	private JButton btnStart;
 	private JLabel lblA;
 	private JButton btnNewButton;
-	private JTextField txtIp;
+	private JTextField textFieldServersIP;
 	private JButton btnGameRules_1;
 	private JLabel lblPotapanjeBrodova;
+	private JTextField textFieldUserName;
 
 //	/**
 //	 * Launch the application.
@@ -46,7 +49,7 @@ public class StartFrame extends JFrame {
 //			}
 //		});
 //	}
-
+		
 	/**
 	 * Create the frame.
 	 */
@@ -61,8 +64,9 @@ public class StartFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		contentPane.add(getBtnNewButton());
-		contentPane.add(getTxtIp());
+		contentPane.add(getTextFieldServersIP());
 		contentPane.add(getBtnGameRules_1());
+		contentPane.add(getTextFieldUserName());
 		contentPane.add(getLblPotapanjeBrodova());
 		contentPane.add(getLblA());
 		//this.setContentPane(new JLabel(cover));
@@ -113,8 +117,7 @@ public class StartFrame extends JFrame {
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 									
-						main.setMyShipsFrame.setVisible(true);
-						setVisible(false);
+						goToSetMyShipsFrame();
 					 									
 				}
 			});
@@ -122,14 +125,14 @@ public class StartFrame extends JFrame {
 		}
 		return btnNewButton;
 	}
-	private JTextField getTxtIp() {
-		if (txtIp == null) {
-			txtIp = new JTextField();
-			txtIp.setText("192.168.1.181");
-			txtIp.setBounds(33, 55, 118, 23);
-			txtIp.setColumns(10);
+	private JTextField getTextFieldServersIP() {
+		if (textFieldServersIP == null) {
+			textFieldServersIP = new JTextField();
+			textFieldServersIP.setText("192.168.1.181");
+			textFieldServersIP.setBounds(33, 158, 118, 23);
+			textFieldServersIP.setColumns(10);
 		}
-		return txtIp;
+		return textFieldServersIP;
 	}
 	private JButton getBtnGameRules_1() {
 		if (btnGameRules_1 == null) {
@@ -147,5 +150,29 @@ public class StartFrame extends JFrame {
 			lblPotapanjeBrodova.setBounds(33, 24, 223, 20);
 		}
 		return lblPotapanjeBrodova;
+	}
+	private JTextField getTextFieldUserName() {
+		if (textFieldUserName == null) {
+			textFieldUserName = new JTextField();
+			textFieldUserName.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					textFieldUserName.setText("");
+				}
+			});
+			textFieldUserName.setText("User name:");
+			textFieldUserName.setBounds(33, 59, 118, 23);
+			textFieldUserName.setColumns(10);
+		}
+		return textFieldUserName;
+	}
+	
+	public void goToSetMyShipsFrame(){
+		
+		main.setMyShipsFrame.setUserAndServerIP(textFieldUserName.getText(), textFieldServersIP.getText());
+		main.setMyShipsFrame.setVisible(true);
+		setVisible(false);
+		
+		
 	}
 }
