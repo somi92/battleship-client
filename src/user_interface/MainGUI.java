@@ -239,23 +239,17 @@ public class MainGUI extends JFrame {
 	}
 
 	public void pozoviMetoduProtokolaSendSHT(int opponent, int iEnter, int jEnter) {
+		seaFieldOpponent1.setEnableToAll(false);
+		seaFieldOpponent2.setEnableToAll(false);
 		String userName;
 		if(opponent==1) userName=labelOpponent1.getText();
 		else userName=labelOpponent2.getText();
 		
 		main.setMyShipsFrame.myClient.sendSHT(userName, iEnter, jEnter);
 		System.out.println("Gadjao sam "+userName+iEnter+jEnter);
-//		seaFieldOpponent1.setEnableToAll(false);
-//		seaFieldOpponent2.setEnableToAll(false);
 		
 	}
-	
-	public int checkMyMatrix(int i, int j){
-		
-		
-		
-		return 0;
-	}
+
 
 	public void azurirajMojaPolja(int sifra, int i, int j) {
 		

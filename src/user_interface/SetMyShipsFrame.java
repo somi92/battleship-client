@@ -481,8 +481,8 @@ public class SetMyShipsFrame extends JFrame {
 						
 						
 						if(myTurn){
-//							main.mainGui.seaFieldOpponent1.setEnableToAll(true);
-//							main.mainGui.seaFieldOpponent2.setEnableToAll(true);
+					main.mainGui.seaFieldOpponent1.setEnableToAll(true);
+							main.mainGui.seaFieldOpponent2.setEnableToAll(true);
 							main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText());  
 						} 
 						
@@ -498,8 +498,8 @@ public class SetMyShipsFrame extends JFrame {
 				      public void run() {
 						main.mainGui.textPane.setText("Igrac "+ username +" je propustio potez ili je diskonektovan.\n" + main.mainGui.textPane.getText());  
 						if(myTurn){
-//							main.mainGui.seaFieldOpponent1.setEnableToAll(true);
-//							main.mainGui.seaFieldOpponent2.setEnableToAll(true);
+//						main.mainGui.seaFieldOpponent1.setEnableToAll(true);
+	//					main.mainGui.seaFieldOpponent2.setEnableToAll(true);
 							main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText());  
 						} 
 				      }
@@ -551,8 +551,8 @@ public class SetMyShipsFrame extends JFrame {
 				main.mainGui.textPane.setText("Igrac "+ username +" je gadjan.\n" + main.mainGui.textPane.getText());  
 				
 				if(myTurn){
-//					main.mainGui.seaFieldOpponent1.setEnableToAll(true);
-//					main.mainGui.seaFieldOpponent2.setEnableToAll(true);
+					main.mainGui.seaFieldOpponent1.setEnableToAll(true);
+					main.mainGui.seaFieldOpponent2.setEnableToAll(true);
 					main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText() );  
 				} 
 				
