@@ -581,6 +581,10 @@ public class SetMyShipsFrame extends JFrame {
 					}	
 				}	
 				
+				if(status == BattleShipStatus.SHIP_SUNKED) {
+					main.mainGui.textPane.setText("Igracu "+username+" je potopljen brod!\n"+main.mainGui.textPane.getText());
+				}
+				
 			//	if(myTurn && unistenSam) main.mainGui.koJeNaPotezu();
 
 				
