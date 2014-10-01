@@ -112,8 +112,7 @@ public class SetMyShipsManager {
 						for (int n=0;n<10;n++){
 							myButtonGameBoard[m][n].setBorderPainted(false);
 						}
-				}//kraj catch
-				
+				}//kraj catch			
 			}
 		});
 	}

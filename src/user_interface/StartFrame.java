@@ -170,6 +170,7 @@ public class StartFrame extends JFrame {
 	public void goToSetMyShipsFrame(){
 		
 		main.setMyShipsFrame.setUserAndServerIP(textFieldUserName.getText(), textFieldServersIP.getText());
+		main.setMyShipsFrame.btnDone.setEnabled(false);
 		main.setMyShipsFrame.setVisible(true);
 		setVisible(false);
 		

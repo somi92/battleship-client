@@ -125,11 +125,11 @@ public class SetMyShipsFrame extends JFrame {
 	private JRadioButton rdbtnHorisontal;
 	private JRadioButton rdbtnVertical;
 	private JLabel lblLinija;
-	private JLabel lblOneCellsShip;
-	private JLabel lblTwoCellsShip;
-	private JLabel lblThreeCellsShip;
-	private JLabel lblFrourCellsShip;
-	private JButton btnDone;
+	public JLabel lblOneCellsShip;
+	public JLabel lblTwoCellsShip;
+	public JLabel lblThreeCellsShip;
+	public JLabel lblFrourCellsShip;
+	public JButton btnDone;
 	private JButton btnCancle;
 	private JLabel label;
 	
@@ -356,10 +356,14 @@ public class SetMyShipsFrame extends JFrame {
 				randomJB.setEnabled(false);
 				randomJB.setSelected(false);
 				}
+			
+			dopustiDoneAkoTreba();	
 			return indeks;
 		}else{
 			randomJB.setSelected(false);
 			randomJB.setEnabled(false);
+			
+			dopustiDoneAkoTreba();
 			return -1;}
 	}	
 	
@@ -373,6 +377,9 @@ public class SetMyShipsFrame extends JFrame {
 				public void actionPerformed(ActionEvent arg0) {
 					
 // prebacujem logicalMatrix iz setMyShipsManager u setMyShipFrame
+					 
+					
+					 
 					 
 					main.mainGui.logicMatrixMine = myShipsManager.logicMatrix;
 					main.mainGui.popuniniMojePoljeBrodicima();
@@ -611,6 +618,13 @@ public class SetMyShipsFrame extends JFrame {
 
 	}
 	
+	public void dopustiDoneAkoTreba(){
+		 if(lblOneCellsShip.getText().equals("0") &&
+				 lblTwoCellsShip.getText().equals("0") &&
+				 lblThreeCellsShip.getText().equals("0") &&
+				 lblFrourCellsShip.getText().equals("0") )
+			 btnDone.setEnabled(true);	
+	}
 	
 }
 
