@@ -30,7 +30,6 @@ public class StartFrame extends JFrame {
 	private JLabel lblA;
 	private JButton btnNewButton;
 	private JTextField textFieldServersIP;
-	private JButton btnGameRules_1;
 	private JLabel lblPotapanjeBrodova;
 	private JTextField textFieldUserName;
 
@@ -65,7 +64,6 @@ public class StartFrame extends JFrame {
 		contentPane.setLayout(null);
 		contentPane.add(getBtnNewButton());
 		contentPane.add(getTextFieldServersIP());
-		contentPane.add(getBtnGameRules_1());
 		contentPane.add(getTextFieldUserName());
 		contentPane.add(getLblPotapanjeBrodova());
 		contentPane.add(getLblA());
@@ -129,17 +127,10 @@ public class StartFrame extends JFrame {
 		if (textFieldServersIP == null) {
 			textFieldServersIP = new JTextField();
 			textFieldServersIP.setText("192.168.1.181");
-			textFieldServersIP.setBounds(33, 158, 118, 23);
+			textFieldServersIP.setBounds(33, 125, 118, 23);
 			textFieldServersIP.setColumns(10);
 		}
 		return textFieldServersIP;
-	}
-	private JButton getBtnGameRules_1() {
-		if (btnGameRules_1 == null) {
-			btnGameRules_1 = new JButton("Game rules");
-			btnGameRules_1.setBounds(33, 124, 118, 23);
-		}
-		return btnGameRules_1;
 	}
 	private JLabel getLblPotapanjeBrodova() {
 		if (lblPotapanjeBrodova == null) {

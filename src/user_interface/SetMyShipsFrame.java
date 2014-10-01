@@ -131,7 +131,6 @@ public class SetMyShipsFrame extends JFrame {
 	public JLabel lblThreeCellsShip;
 	public JLabel lblFrourCellsShip;
 	public JButton btnDone;
-	private JButton btnCancle;
 	private JLabel label;
 	
 	private JPanel getCenterPanel() {
@@ -227,7 +226,6 @@ public class SetMyShipsFrame extends JFrame {
 			leftPanel.add(getRdbtnVertical(), "cell 0 8");
 			leftPanel.add(getLabel(), "cell 0 9,growx");
 			leftPanel.add(getBtnDone(), "cell 0 10,growx");
-			leftPanel.add(getBtnCancle(), "cell 0 11,growx");
 		}
 		return leftPanel;
 	}
@@ -397,21 +395,6 @@ public class SetMyShipsFrame extends JFrame {
 			btnDone.setHorizontalTextPosition(SwingConstants.CENTER);
 		}
 		return btnDone;
-	}
-	private JButton getBtnCancle() {
-		if (btnCancle == null) {
-			btnCancle = new JButton("CANCLE");
-			btnCancle.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					
-					main.startFrame.setVisible(true);
-					setVisible(false);
-					
-				}
-			});
-			btnCancle.setHorizontalTextPosition(SwingConstants.CENTER);
-		}
-		return btnCancle;
 	}
 	private JLabel getLabel() {
 		if (label == null) {
