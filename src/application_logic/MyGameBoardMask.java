@@ -100,7 +100,7 @@ public class MyGameBoardMask {
 	}
 		
 		
-	return 0;
+	return -field;
 }
 
 
