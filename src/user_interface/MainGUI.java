@@ -8,10 +8,9 @@ import java.awt.Label;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.FlowLayout;
+
 
 import javax.swing.ImageIcon;
-import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import java.awt.Dimension;
@@ -27,6 +26,7 @@ import javax.swing.SwingConstants;
 import utilities.BattleShipStatus;
 
 import java.awt.Component;
+import javax.swing.border.LineBorder;
 
 public class MainGUI extends JFrame {
 	public Main main = null;
@@ -34,10 +34,10 @@ public class MainGUI extends JFrame {
 	//kada mene neko gadja
 	int sifra = -1;
 	
-	public ImageIcon xImg = new ImageIcon(getClass().getResource("/resources/x.png"));
+	public ImageIcon seaMissImg = new ImageIcon(getClass().getResource("/resources/miss.png"));
 	public ImageIcon bombImg = new ImageIcon(getClass().getResource("/resources/bomb.png"));
 	
-
+	String[] redosledIgranja = new String[3];
 	
 	SeaFieldManager seaFieldManager = null;
 	SeaFieldPanel seaFieldMy = null;
@@ -66,6 +66,9 @@ public class MainGUI extends JFrame {
 	public JLabel labelMe;
 	public JLabel labelOpponent2;
 
+	public String myUserName="";
+	//na potezu ko je 0-2
+	int naPotezu = 0;
 //	/**
 //	 * Launch the application.
 //	 */
@@ -239,6 +242,9 @@ public class MainGUI extends JFrame {
 	}
 
 	public void pozoviMetoduProtokolaSendSHT(int opponent, int iEnter, int jEnter) {
+		
+		//PROVERI DA NE GADJAM ISTA POLJA
+		
 		seaFieldOpponent1.setEnableToAll(false);
 		seaFieldOpponent2.setEnableToAll(false);
 		String userName;
@@ -256,25 +262,86 @@ public class MainGUI extends JFrame {
 		//ili pogodio ili potovio
 		if(sifra!=BattleShipStatus.SHIP_MISSED)
 			seaFieldMy.seaButtonMatrix[i][j].setIcon(bombImg);
-		else seaFieldMy.seaButtonMatrix[i][j].setIcon(xImg);
+		else seaFieldMy.seaButtonMatrix[i][j].setIcon(seaMissImg);
 
 	}
 
-	public void azurirajOpponentsPolja(int sifra, int i, int j,int opponent) {
+	public void azurirajOpponentsPolja(int status, int i, int j,int opponent) {
 		
 		if(opponent==1){
-			if(sifra!=BattleShipStatus.SHIP_MISSED)
-				seaFieldOpponent1.seaButtonMatrix[i][j].setIcon(bombImg);
-			else seaFieldOpponent1.seaButtonMatrix[i][j].setIcon(xImg);
+			if(status==BattleShipStatus.SHIP_MISSED){
+				seaFieldOpponent1.seaButtonMatrix[i][j].setIcon(seaMissImg);
+				textPane.setText("Igrac "+ labelOpponent1.getText() +" je promasen !\n" + main.mainGui.textPane.getText());  
+
+			}
+			
+			if(status==BattleShipStatus.SHIP_HIT || status==BattleShipStatus.SHIP_SUNKED || status==BattleShipStatus.FLEET_DESTROYED){
+			 seaFieldOpponent1.seaButtonMatrix[i][j].setIcon(bombImg);	
+				textPane.setText("Igrac "+ labelOpponent1.getText() +" je pogodjen !\n" + main.mainGui.textPane.getText());  
+
+			}
+			
+			
+			if(status==BattleShipStatus.FLEET_DESTROYED){
+				seaFieldOpponent1.setEnableToAll(false);
+				textPane.setText("Igrac "+ labelOpponent1.getText() +" je UNISTEN !\n" + main.mainGui.textPane.getText());  
+			}
 		}
-		else{
-			if(sifra!=BattleShipStatus.SHIP_MISSED)
-				seaFieldOpponent2.seaButtonMatrix[i][j].setIcon(bombImg);
-			else seaFieldOpponent2.seaButtonMatrix[i][j].setIcon(xImg);	
+		else{// opponent 2
+			if(status==BattleShipStatus.SHIP_MISSED){
+				seaFieldOpponent2.seaButtonMatrix[i][j].setIcon(seaMissImg);
+				textPane.setText("Igrac "+ labelOpponent2.getText() +" je promasen !\n" + main.mainGui.textPane.getText());  
+
+			}
+			
+			if(status==BattleShipStatus.SHIP_HIT || status==BattleShipStatus.SHIP_SUNKED || status==BattleShipStatus.FLEET_DESTROYED){
+			 seaFieldOpponent2.seaButtonMatrix[i][j].setIcon(bombImg);	
+				textPane.setText("Igrac "+ labelOpponent2.getText() +" je pogodjen !\n" + main.mainGui.textPane.getText());  
+			}
+					
+			if(status==BattleShipStatus.FLEET_DESTROYED){
+				seaFieldOpponent2.setEnableToAll(false);
+				textPane.setText("Igrac "+ labelOpponent2.getText() +" je UNISTEN !\n" + main.mainGui.textPane.getText());  
+			//boolean postaje true
+			}
+			
 		}
 		
+		
+		
+		
+		
+		
+		
+	}
+
+	public void praviRedosledIgranja(String peer1Username,String peer2Username, int index1, int index2,int myIndex) {
+		
+		 redosledIgranja[myIndex-1] = myUserName;
+		 redosledIgranja[index1-1] = peer1Username;
+		 redosledIgranja[index2-1] = peer2Username;
+		 		 
 	}
 	
+
 	
+//	public void koJeNaPotezu(){		
+//		if(naPotezu==2) naPotezu=0;
+//		else naPotezu++;
+//		
+//		zatamniLabele();
+//	}
+	
+//	public void zatamniLabele(){
+//		if(redosledIgranja[naPotezu].equals(labelMe.getText())) {  vratiSveLabele();}//podebljaj mene a druge vrati  
+//		if(redosledIgranja[naPotezu].equals(labelOpponent1.getText())) {  vratiSveLabele();  labelOpponent1.setBorder(new LineBorder(new Color(0, 0, 0), 5));}
+//		if(redosledIgranja[naPotezu].equals(labelOpponent2.getText())) {   vratiSveLabele();  labelOpponent2.setBorder(new LineBorder(new Color(0, 0, 0), 5));}
+//	}
+	
+//	public void vratiSveLabele(){
+//		labelMe.setBorder(new LineBorder(new Color(0, 0, 0), 0));
+//		labelOpponent1.setBorder(new LineBorder(new Color(0, 0, 0), 0));
+//		labelOpponent2.setBorder(new LineBorder(new Color(0, 0, 0), 0));
+//	}
 	
 }

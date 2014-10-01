@@ -4,10 +4,13 @@ import interfaces.ClientEventListener;
 import interfaces.PeerEventListener;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
 import main.Main;
 import net.miginfocom.swing.MigLayout;
 import network_communication.ClientThread;
@@ -15,7 +18,9 @@ import network_communication.CommunicationController;
 import network_communication.ServerSideThread;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -34,8 +39,15 @@ import java.util.concurrent.BlockingQueue;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
+import utilities.BattleShipStatus;
+
 public class SetMyShipsFrame extends JFrame {
 
+	//za azuriranje labela kada ja POGODIM
+	boolean unistenSam = false;
+	
+	public ImageIcon cover = new ImageIcon(getClass().getResource("/resources/cover.jpg"));
+	
 	Main main = null;
 	
 	public SetMyShipsFrame me = this;
@@ -46,7 +58,8 @@ public class SetMyShipsFrame extends JFrame {
 	String myUserName = "";
 	String mainServerIP = "192.168.1.181";
 	
-	
+	boolean opponent1Destroyed = false;
+	boolean opponent2Destroyed = false;
 	
 	
 	private JPanel contentPane;
@@ -413,6 +426,7 @@ public class SetMyShipsFrame extends JFrame {
 	public void setUserAndServerIP(String userName, String serverIP) {
 		this.myUserName = userName;
 		this.mainServerIP = serverIP;
+		main.mainGui.myUserName=userName;
 	}
 	
 	
@@ -468,24 +482,31 @@ public class SetMyShipsFrame extends JFrame {
 			}
 			
 			@Override
-			public void onRnd(final boolean myTurn, int myRND, int myIndex,
-					final String peer1Username, int peer1Index, final String peer2Username,
-					int peer2Index) {
+			public void onRnd(final boolean myTurn, final int myRND, final int myIndex,
+					final String peer1Username, final int peer1Index, final String peer2Username,
+					final int peer2Index) {
 						
 				 EventQueue.invokeLater(new Runnable() {
 				      public void run() {
-						main.mainGui.labelOpponent1.setText(peer1Username);
-						main.mainGui.labelOpponent2.setText(peer2Username);
-						
-						//PRATI KO JE NA REDu
+				    	  main.mainGui.labelOpponent1.setText(peer1Username);
+				    	  main.mainGui.labelOpponent2.setText(peer2Username);
 						
 						
-						if(myTurn){
-					main.mainGui.seaFieldOpponent1.setEnableToAll(true);
-							main.mainGui.seaFieldOpponent2.setEnableToAll(true);
-							main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText());  
-						} 
+				    	  if(myTurn){
+				    		  main.mainGui.seaFieldOpponent1.setEnableToAll(true);
+				    		  main.mainGui.seaFieldOpponent2.setEnableToAll(true);
+				    		  main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText());  
+				    	  } 
+				    	  else{
+				    		  main.mainGui.seaFieldOpponent1.setEnableToAll(false);
+				    		  main.mainGui.seaFieldOpponent2.setEnableToAll(false);						
+				    	  }
 						
+				    	  main.mainGui.praviRedosledIgranja(peer1Username,peer2Username,peer1Index,peer2Index,myIndex);
+						
+				    	  //na pocetku zatamni ko igra
+				    	//  main.mainGui.zatamniLabele();
+				    	  
 				       }
 				 });
 				
@@ -497,13 +518,19 @@ public class SetMyShipsFrame extends JFrame {
 				 EventQueue.invokeLater(new Runnable() {
 				      public void run() {
 						main.mainGui.textPane.setText("Igrac "+ username +" je propustio potez ili je diskonektovan.\n" + main.mainGui.textPane.getText());  
+	
+						//main.mainGui.koJeNaPotezu();
+
+												
 						if(myTurn){
-//						main.mainGui.seaFieldOpponent1.setEnableToAll(true);
-	//					main.mainGui.seaFieldOpponent2.setEnableToAll(true);
+							if(!opponent1Destroyed) main.mainGui.seaFieldOpponent1.setEnableToAll(true);
+							if(!opponent2Destroyed) main.mainGui.seaFieldOpponent2.setEnableToAll(true);
 							main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText());  
 						} 
+															
 				      }
 				 });
+				 
 				
 			}
 			
@@ -524,6 +551,10 @@ public class SetMyShipsFrame extends JFrame {
 				sifra = myShipsManager.gameBoardMask.takeAHit(coorI, coorJ);
 				main.mainGui.azurirajMojaPolja(sifra,coorI,coorJ);
 				
+				if(sifra==BattleShipStatus.FLEET_DESTROYED){ 
+					JOptionPane.showMessageDialog(centerPanel,"Unisten si !");
+					unistenSam = true;
+				}
 				return sifra;
 			}
 			
@@ -543,18 +574,30 @@ public class SetMyShipsFrame extends JFrame {
 					}	
 				}	
 				
-				///
+			//	if(myTurn && unistenSam) main.mainGui.koJeNaPotezu();
+
 				
-				
-				
-				
-				main.mainGui.textPane.setText("Igrac "+ username +" je gadjan.\n" + main.mainGui.textPane.getText());  
+				//if(status==BattleShipStatus.SHIP_MISSED) main.mainGui.koJeNaPotezu();
+			
+				if(status==BattleShipStatus.FLEET_DESTROYED) {
+					if(main.mainGui.labelOpponent1.getText().equals(username)) opponent1Destroyed=true;
+					if(main.mainGui.labelOpponent2.getText().equals(username)) opponent2Destroyed=true;
+					
+					if(opponent1Destroyed && opponent2Destroyed) main.mainGui.textPane.setText("POBEDIO SI !\n" + main.mainGui.textPane.getText());
+					
+				}
 				
 				if(myTurn){
-					main.mainGui.seaFieldOpponent1.setEnableToAll(true);
-					main.mainGui.seaFieldOpponent2.setEnableToAll(true);
+					if(!opponent1Destroyed) main.mainGui.seaFieldOpponent1.setEnableToAll(true);
+					if(!opponent2Destroyed) main.mainGui.seaFieldOpponent2.setEnableToAll(true);
 					main.mainGui.textPane.setText("Ti si na potezu.\n" + main.mainGui.textPane.getText() );  
 				} 
+				
+				//kada neko izgubi
+				
+				
+				
+				
 				
 			}
 		});
