@@ -1,5 +1,7 @@
 package network_communication;
 
+import interfaces.ChatEventListener;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -19,6 +21,8 @@ public class ServerSideThread implements Runnable {
 	private String myUsername;
 	private ServerSocket serverSide;
 	private ExecutorService serverSideExecutor;
+	
+	private ChatEventListener chatListener; 
 	
 //	private String mainServerIP;
 	
@@ -51,6 +55,10 @@ public class ServerSideThread implements Runnable {
 	
 	public String getMyUsername() {
 		return myUsername;
+	}
+	
+	public void setChatEventListener(ChatEventListener chatListener) {
+		this.chatListener = chatListener;
 	}
 	
 //	public void setMainServerIP(String mainServerIP) {
@@ -124,7 +132,14 @@ public class ServerSideThread implements Runnable {
 				while(true) {
 					clientMessage = clientInput.readLine();
 					if(clientMessage != null) {
-						messageQueue.put(clientMessage);
+						
+						if(clientMessage.startsWith("CHT")) {
+							String[] parts = clientMessage.split("_");
+							chatListener.onChatMessageReceived(parts[1], parts[2]);
+						} else {
+							messageQueue.put(clientMessage);
+						}
+						
 						clientOutput.writeBytes("OK"+'\n');
 					}
 				}

@@ -133,6 +133,41 @@ public class CommunicationController implements NetworkMediator, ClientMediator,
 			return false;
 		}
 	}
+	
+	@Override
+	public void sendChatToPeers(String message) {
+		
+		try {
+			peer1OutputStream.writeBytes(message);
+		} catch (IOException e) {
+			// TODO: handle exception
+
+		}
+
+		try {
+			peer2OutputStream.writeBytes(message);
+		} catch (IOException e) {
+			// TODO: handle exception
+
+		}
+
+		String response1 = "";
+		try {
+			response1 = peer1InputStream.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+
+		}
+		
+		String response2 = "";
+		try {
+			response2 = peer2InputStream.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+
+		}
+		
+	}
 
 	@Override
 	public boolean connectToPeers(String message) throws IOException {

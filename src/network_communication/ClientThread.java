@@ -288,6 +288,10 @@ public class ClientThread implements Runnable {
 		}
 	}
 	
+	public void sendCHT(String message) {
+		mediator.sendChatToPeers("CHT_"+protocol.getMyUserName()+"_"+message+'\n');
+	}
+	
 	// listener setters
 	public void setClientEventListener(ClientEventListener listener) {
 		protocol.setClientListener(listener);

@@ -27,6 +27,9 @@ import utilities.BattleShipStatus;
 
 import java.awt.Component;
 import javax.swing.border.LineBorder;
+import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainGUI extends JFrame {
 	public Main main = null;
@@ -55,9 +58,6 @@ public class MainGUI extends JFrame {
 	private JScrollPane scrollPane;
 	public JTextPane textPane;
 	private JPanel panel;
-	private JButton btnNewButton;
-	private JButton btnNewButton_1;
-	private JButton btnNewButton_2;
 	private JPanel panelSeaFieldOpponent1;
 	private JPanel panelSeaFieldMy;
 	private JPanel panelSeaFieldOpponent2;
@@ -69,6 +69,10 @@ public class MainGUI extends JFrame {
 	public String myUserName="";
 	//na potezu ko je 0-2
 	int naPotezu = 0;
+	private JButton btnSendChatMessage;
+	private JScrollPane scrollPane_1;
+	public JTextPane textPaneChat;
+	private JTextField textChatField;
 //	/**
 //	 * Launch the application.
 //	 */
@@ -98,7 +102,7 @@ public class MainGUI extends JFrame {
 		seaFieldOpponent2 = seaFieldManager.createSeaField(false,2);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 830, 460);
+		setBounds(100, 100, 830, 560);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -122,7 +126,7 @@ public class MainGUI extends JFrame {
 	private JPanel getDownPanel() {
 		if (downPanel == null) {
 			downPanel = new JPanel();
-			downPanel.setPreferredSize(new Dimension(100, 100));
+			downPanel.setPreferredSize(new Dimension(100, 200));
 			downPanel.setLayout(new BorderLayout(0, 0));
 			downPanel.add(getScrollPane(), BorderLayout.CENTER);
 			downPanel.add(getPanel(), BorderLayout.EAST);
@@ -139,6 +143,8 @@ public class MainGUI extends JFrame {
 	private JTextPane getTextPane() {
 		if (textPane == null) {
 			textPane = new JTextPane();
+			textPane.setSize(new Dimension(10, 20));
+			textPane.setPreferredSize(new Dimension(6, 15));
 			textPane.setEditable(false);
 		}
 		return textPane;
@@ -146,30 +152,13 @@ public class MainGUI extends JFrame {
 	private JPanel getPanel() {
 		if (panel == null) {
 			panel = new JPanel();
-			panel.setLayout(new MigLayout("", "[89px]", "[23px][][]"));
-			panel.add(getBtnNewButton(), "cell 0 0,alignx left,aligny top");
-			panel.add(getBtnNewButton_1(), "cell 0 1");
-			panel.add(getBtnNewButton_2(), "cell 0 2");
+			panel.setPreferredSize(new Dimension(400, 15));
+			panel.setLayout(new MigLayout("", "[89px,grow,fill]", "[23px,grow][][]"));
+			panel.add(getScrollPane_1(), "cell 0 0,grow");
+			panel.add(getTextField(), "cell 0 1,growx");
+			panel.add(getBtnSendChatMessage(), "cell 0 2");
 		}
 		return panel;
-	}
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("New button");
-		}
-		return btnNewButton;
-	}
-	private JButton getBtnNewButton_1() {
-		if (btnNewButton_1 == null) {
-			btnNewButton_1 = new JButton("New button");
-		}
-		return btnNewButton_1;
-	}
-	private JButton getBtnNewButton_2() {
-		if (btnNewButton_2 == null) {
-			btnNewButton_2 = new JButton("New button");
-		}
-		return btnNewButton_2;
 	}
 	private JPanel getPanelSeaFieldOpponent1() {
 		if (panelSeaFieldOpponent1 == null) {
@@ -344,4 +333,50 @@ public class MainGUI extends JFrame {
 //		labelOpponent2.setBorder(new LineBorder(new Color(0, 0, 0), 0));
 //	}
 	
+	private JButton getBtnSendChatMessage() {
+		if (btnSendChatMessage == null) {
+			btnSendChatMessage = new JButton("Send message");
+			btnSendChatMessage.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if(!main.mainGui.textChatField.getText().equals("") && main.mainGui.textChatField.getText() != null) {
+						main.setMyShipsFrame.myClient.sendCHT(main.mainGui.textChatField.getText());
+						main.mainGui.textPaneChat.setText(labelMe.getText()+">: "+main.mainGui.textChatField.getText()+'\n'+main.mainGui.textPaneChat.getText());
+						textChatField.setText("");
+					}
+				}
+			});
+		}
+		return btnSendChatMessage;
+	}
+	private JScrollPane getScrollPane_1() {
+		if (scrollPane_1 == null) {
+			scrollPane_1 = new JScrollPane();
+			scrollPane_1.setViewportView(getTextPane_1());
+		}
+		return scrollPane_1;
+	}
+	private JTextPane getTextPane_1() {
+		if (textPaneChat == null) {
+			textPaneChat = new JTextPane();
+			textPaneChat.setEditable(false);
+		}
+		return textPaneChat;
+	}
+	private JTextField getTextField() {
+		if (textChatField == null) {
+			textChatField = new JTextField();
+			textChatField.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					if(!main.mainGui.textChatField.getText().equals("") && main.mainGui.textChatField.getText() != null) {
+						main.setMyShipsFrame.myClient.sendCHT(main.mainGui.textChatField.getText());
+						main.mainGui.textPaneChat.setText(labelMe.getText()+">: "+main.mainGui.textChatField.getText()+'\n'+main.mainGui.textPaneChat.getText());
+						textChatField.setText("");
+					}
+				}
+			});
+			textChatField.setColumns(10);
+		}
+		return textChatField;
+	}
 }

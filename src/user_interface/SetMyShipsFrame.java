@@ -1,5 +1,6 @@
 package user_interface;
 
+import interfaces.ChatEventListener;
 import interfaces.ClientEventListener;
 import interfaces.PeerEventListener;
 
@@ -443,6 +444,15 @@ public class SetMyShipsFrame extends JFrame {
 		controler = new CommunicationController();
 		myServer = new ServerSideThread(queue,0,myUserName);
 		myClient = new ClientThread(controler, queue, "192.168.1.181", 9080);
+		
+		myServer.setChatEventListener(new ChatEventListener() {
+			
+			@Override
+			public void onChatMessageReceived(String username, String message) {
+				// TODO Auto-generated method stub
+				main.mainGui.textPaneChat.setText(username+">: "+message+'\n'+main.mainGui.textPaneChat.getText());
+			}
+		});
 		
 		myClient.setClientEventListener(new ClientEventListener() {
 			
